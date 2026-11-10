@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aneka Medica · Alat kesehatan</title>
+<meta name="description" content="Etalase alat kesehatan Aneka Medica: stetoskop, alat ukur, lab dan reagen, alat bantu. Pesanan dikirim ke WhatsApp penjual.">
+<link rel="icon" href="/logo.jpg">
+<link rel="preload" as="image" href="/catalog/01-littmann-classic-iii.png">
+<style>
+  :root {
+    --bg: #f2f3f5;
+    --surface: #ffffff;
+    --ink: #1c1c1c;
+    --muted: #5e6770;
+    --line: #e4e6ea;
+    --primary: #d0121a;
+    --brand: #163e7a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.45;
+  }
+  body.terkunci { overflow: hidden; }
+  a { color: inherit; }
+  button, input, select, textarea { font: inherit; }
+  button { cursor: pointer; }
+  button:disabled { cursor: not-allowed; opacity: .45; }
+  :focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
+  [hidden] { display: none !important; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+
+  .ticker { overflow: hidden; background: var(--primary); color: white; }
+  .ticker-track { display: flex; width: max-content; padding: 8px 0; animation: geser 40s linear infinite; }
+  .ticker:hover .ticker-track { animation-play-state: paused; }
+  .ticker span { font-size: 12px; font-weight: 600; padding: 0 24px; white-space: nowrap; }
+  @keyframes geser { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .ticker-track { animation: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  .atas { background: white; border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 5; }
+  .bar { display: flex; align-items: center; gap: 12px; padding: 12px 0; }
+  .logo { width: 44px; height: 44px; object-fit: contain; border: 1px solid var(--line); border-radius: 8px; background: white; }
+  .nama { font-weight: 800; color: var(--brand); }
+  .kecil { font-size: 12px; color: var(--muted); }
+  .cari { flex: 1; min-width: 0; height: 44px; border: 1px solid var(--line); border-radius: 999px; padding: 0 16px; background: var(--bg); }
+  @media (max-width: 599px) {
+    .bar { flex-wrap: wrap; }
+    .bar > div { flex: 1; }
+    .cari { order: 3; flex-basis: 100%; }
+  }
+  .pesanan { height: 44px; border: 0; border-radius: 999px; background: var(--primary); color: white; padding: 0 16px; font-weight: 700; white-space: nowrap; }
+  nav { display: flex; gap: 4px; overflow: auto; padding-bottom: 8px; }
+  nav button, nav a { background: none; border: 0; height: 44px; padding: 0 12px; color: var(--ink); text-decoration: none; white-space: nowrap; display: inline-flex; align-items: center; }
+  nav .aktif { font-weight: 800; color: var(--primary); }
+
+  .banner { margin-top: 16px; background: white; border: 1px solid var(--line); border-radius: 12px; display: grid; gap: 16px; padding: 24px; }
+  @media (min-width: 800px) { .banner { grid-template-columns: 1fr 1fr; align-items: center; } }
+  .banner h1 { margin: 8px 0; font-size: 32px; line-height: 1.15; text-transform: capitalize; }
+  .harga { color: var(--primary); font-weight: 800; font-size: 24px; margin: 8px 0; }
+  .merah, .tambah, .tombol-ghost { border: 0; background: var(--primary); color: white; height: 44px; border-radius: 999px; padding: 0 18px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+  .tambah { width: 100%; border-radius: 8px; margin-top: auto; }
+  .tombol-ghost { background: white; color: var(--primary); border: 2px solid var(--primary); }
+  .foto-banner { width: 100%; max-height: 320px; object-fit: contain; }
+  .titik { display: flex; justify-content: center; gap: 0; padding: 4px 0 8px; }
+  .titik button { width: 32px; height: 32px; border: 0; background: none; display: grid; place-items: center; }
+  .titik button::before { content: ""; width: 12px; height: 12px; border-radius: 99px; background: var(--line); }
+  .titik .nyala::before { background: var(--primary); }
+
+  .dua { display: grid; gap: 12px; margin-top: 8px; }
+  @media (min-width: 800px) { .dua { grid-template-columns: 1fr 1fr; } }
+  .kotak { border-radius: 12px; padding: 24px; color: white; }
+  .kotak h2 { margin: 6px 0 8px; font-size: 20px; line-height: 1.25; }
+  .kotak p { margin: 0; }
+  .kotak .kecil { color: rgba(255,255,255,.8); }
+  .kotak a { font-weight: 700; }
+  .biru { background: var(--brand); }
+  .merah-kotak { background: var(--primary); }
+
+  .kategori { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+  @media (min-width: 700px) { .kategori { grid-template-columns: repeat(6, 1fr); } }
+  .kategori button { min-height: 72px; background: white; border: 1px solid var(--line); border-radius: 12px; font-weight: 700; padding: 8px; }
+  .kategori .aktif { border: 2px solid var(--primary); color: var(--primary); }
+
+  .etalase { padding: 32px 0 16px; scroll-margin-top: 112px; }
+  .etalase h2 { margin: 0 0 4px; }
+  .etalase h3.grup { margin: 24px 0 8px; }
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  @media (min-width: 700px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+  .kartu { background: white; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+  .gambar { aspect-ratio: 1; display: grid; place-items: center; padding: 12px; background: white; }
+  .gambar img { width: 100%; height: 100%; object-fit: contain; }
+  .tanpa-foto { display: grid; place-items: center; gap: 6px; text-align: center; color: var(--muted); }
+  .tanpa-foto svg { width: 56px; height: 56px; }
+  .tanpa-foto a { font-size: 12px; font-weight: 700; color: var(--brand); display: inline-flex; align-items: center; min-height: 44px; padding: 0 8px; }
+  .label { background: var(--brand); color: white; font-size: 12px; font-weight: 700; padding: 8px 12px; }
+  .isi { padding: 12px; display: flex; flex-direction: column; flex: 1; }
+  .isi h3 { margin: 0; font-size: 14px; text-transform: capitalize; overflow-wrap: anywhere; }
+  .isi .harga { font-size: 16px; margin: 8px 0 0; }
+
+  .langkah { display: grid; gap: 12px; margin: 24px 0 40px; }
+  @media (min-width: 800px) { .langkah { grid-template-columns: 1fr 1fr 1fr; } }
+  .langkah article { background: white; border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+  .langkah h2 { font-size: 18px; margin: 12px 0 4px; }
+  .langkah p { margin: 0; color: var(--muted); }
+  .nomor { width: 40px; height: 40px; border-radius: 99px; display: grid; place-items: center; background: var(--primary); color: white; font-weight: 800; }
+
+  .jaminan { background: var(--primary); color: white; }
+  .jaminan .wrap { display: grid; gap: 8px; padding: 20px 16px; font-weight: 700; font-size: 14px; }
+  .jaminan p { margin: 0; }
+  @media (min-width: 800px) { .jaminan .wrap { grid-template-columns: repeat(3, 1fr); } }
+
+  .kaki-luar { background: white; border-top: 1px solid var(--line); }
+  .kaki { display: grid; gap: 24px; padding: 40px 0 32px; }
+  @media (min-width: 800px) { .kaki { grid-template-columns: 1.2fr 1fr 1fr; } }
+  .kaki p { margin: 6px 0; }
+  .wm { width: 140px; display: block; margin-top: 12px; }
+
+  .wa { position: fixed; right: 16px; bottom: 16px; width: 56px; height: 56px; border-radius: 99px; background: var(--primary); color: white; display: grid; place-items: center; text-decoration: none; font-weight: 800; box-shadow: 0 2px 8px rgba(0,0,0,.25); z-index: 4; }
+
+  .layar { position: fixed; inset: 0; background: rgba(28,28,28,.45); display: flex; justify-content: flex-end; z-index: 10; }
+  .laci { width: min(440px, 100%); height: 100%; background: var(--bg); display: flex; flex-direction: column; }
+  .laci-kepala, .laci-kaki { padding: 12px 16px; background: white; }
+  .laci-kepala { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); }
+  .laci-kaki { border-top: 1px solid var(--line); }
+  .laci-kepala button { height: 44px; padding: 0 12px; border: 1px solid var(--line); background: white; border-radius: 8px; }
+  .isi-laci { padding: 16px; overflow: auto; flex: 1; }
+  .baris { display: flex; gap: 8px; align-items: center; margin: 4px 0 12px; }
+  .baris button { width: 44px; height: 44px; border-radius: 99px; border: 1px solid var(--line); background: white; font-size: 18px; }
+  .item p { margin: 12px 0 0; overflow-wrap: anywhere; }
+  label { display: block; font-size: 14px; font-weight: 700; margin-top: 12px; }
+  input, textarea, select { width: 100%; margin-top: 4px; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: white; font-weight: 400; min-height: 44px; }
+  .dua-kolom { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .centang { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+  .centang input { width: 24px; height: 24px; min-height: 0; margin: 0; flex: none; }
+  .catatan-laci { background: white; border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin: 0 0 12px; font-size: 14px; }
+  .petunjuk { font-size: 13px; color: var(--muted); margin: 8px 0 0; }
+  .kosongkan { margin-top: 8px; width: 100%; height: 44px; border: 1px solid var(--line); background: white; border-radius: 999px; font-weight: 700; }
+  .terkirim { background: #e9f5ec; border: 1px solid #b6dcc0; border-radius: 12px; padding: 12px; margin-bottom: 12px; font-size: 14px; }
+</style>
+</head>
+<body>
+<div id="halaman">
+  <div class="ticker" aria-label="Info toko">
+    <div class="ticker-track" id="pita"></div>
+  </div>
+  <header class="atas">
+    <div class="wrap bar">
+      <img class="logo" src="/logo.jpg" alt="Logo Aneka Medica" width="44" height="44">
+      <div>
+        <div class="nama" id="nama-toko">Aneka Medica</div>
+        <div class="kecil" id="sub-toko"></div>
+      </div>
+      <input id="cari" class="cari" type="search" placeholder="Cari stetoskop, Hanna, laringoskop…" aria-label="Cari barang">
+      <button class="pesanan" id="buka" type="button">Pesanan <span id="jumlah">0</span></button>
+    </div>
+    <nav class="wrap" id="menu" aria-label="Kategori"></nav>
+  </header>
+
+  <main class="wrap">
+    <section class="banner" id="banner" aria-label="Pilihan etalase"></section>
+    <div class="titik" id="titik"></div>
+    <section class="dua" id="info"></section>
+    <section class="kategori" id="kategori" aria-label="Kategori barang"></section>
+    <section class="etalase" id="etalase">
+      <h2>Etalase alat kesehatan</h2>
+      <p class="kecil" id="hitungan" aria-live="polite"></p>
+      <div id="daftar"></div>
+    </section>
+    <section class="langkah" id="langkah"></section>
+  </main>
+
+  <section class="jaminan">
+    <div class="wrap" id="jaminan"></div>
+  </section>
+  <footer class="kaki-luar">
+    <div class="wrap kaki" id="kaki"></div>
+  </footer>
+  <a class="wa" id="wa" href="#" aria-label="Chat WhatsApp" target="_blank" rel="noopener" hidden>WA</a>
+</div>
+
+<div class="layar" id="laci" hidden>
+  <aside class="laci" role="dialog" aria-modal="true" aria-labelledby="judul-laci">
+    <div class="laci-kepala">
+      <strong id="judul-laci">Pesanan</strong>
+      <button id="tutup" type="button">Tutup</button>
+    </div>
+    <div class="isi-laci">
+      <div id="status-kirim"></div>
+      <div id="isi-keranjang"></div>
+      <div id="catatan-laci"></div>
+      <label for="nama">Nama penerima<input id="nama" autocomplete="name"></label>
+      <label for="alamat">Alamat lengkap<textarea id="alamat" rows="3" autocomplete="street-address"></textarea></label>
+      <label for="kecamatan">Kecamatan<input id="kecamatan"></label>
+      <div class="dua-kolom">
+        <label for="kota">Kota/Kabupaten<input id="kota" autocomplete="address-level2"></label>
+        <label for="pos">Kode pos<input id="pos" inputmode="numeric" maxlength="5" autocomplete="postal-code"></label>
+      </div>
+      <label for="kurir">Ekspedisi
+        <select id="kurir"></select>
+      </label>
+      <div id="blok-invoice" hidden>
+        <label class="centang" for="invoice"><input type="checkbox" id="invoice"> Perlu invoice</label>
+        <label for="nama-invoice" id="label-nama-invoice" hidden>Nama untuk invoice<input id="nama-invoice"></label>
+      </div>
+      <label for="catatan">Catatan (opsional)<input id="catatan"></label>
+      <p class="kecil" id="subtotal"></p>
+    </div>
+    <div class="laci-kaki">
+      <button class="merah" id="kirim" type="button" style="width:100%">Kirim pesanan ke WhatsApp</button>
+      <p class="petunjuk" id="petunjuk" aria-live="polite"></p>
+      <button class="kosongkan" id="kosongkan" type="button" hidden>Kosongkan pesanan</button>
+    </div>
+  </aside>
+</div>
+
+<script>
+/* ====== TOKO: semua data toko ada di sini. Kosongkan nilai = tidak tampil di halaman. ====== */
+const TOKO = {
+  nama: "Aneka Medica",
+  wa: "",                 // format 62xxxxxxxxxx, tanpa +, spasi, atau 0 di depan
+  rating: "",             // angka persis dari Shopee
+  kota: "Jakarta Utara",
+  alamat: "",
+  jamBalas: "",           // contoh: "Senin-Sabtu 08.00-17.00"
+  izinToko: "",           // nomor izin toko alat kesehatan
+  layaniInvoice: false,   // true = tampilkan opsi "Perlu invoice"
+  shopee: "https://id.shp.ee/SqLfvqLV",
+  kurir: ["J&T Express", "JNE", "SiCepat", "TIKI", "POS Indonesia"]
+};
+const WA_OK = /^62[1-9]\d{7,12}$/.test(TOKO.wa);
+const KATEGORI = ["Semua", "Stetoskop", "Alat ukur", "Lab & reagen", "Alat bantu", "Lainnya"];
+
+/* Satu objek = satu barang. image "" = belum ada foto. */
+const products = [
+ {
+  "id": "01",
+  "name": "Littmann classic III stetoskop 3M original",
+  "price": 1456000,
+  "category": "Stetoskop",
+  "image": "/catalog/01-littmann-classic-iii.png"
+ },
+ {
+  "id": "02",
+  "name": "PH hanna 98107 New Original",
+  "price": 1283400,
+  "category": "Lab & reagen",
+  "image": "/catalog/02-hanna-ph-98107.png"
+ },
+ {
+  "id": "03",
+  "name": "hanna instrument HI-98121 Pocket pH and ORP (Redox) Tester",
+  "price": 7000000,
+  "category": "Lab & reagen",
+  "image": "/catalog/03-hanna-hi-98121.png"
+ },
+ {
+  "id": "04",
+  "name": "laringoskop riester blade 00",
+  "price": 1500000,
+  "category": "Lainnya",
+  "image": "/catalog/04-laringoskop-riester.png"
+ },
+ {
+  "id": "05",
+  "name": "mouthpiece alcoscan Al 6000 isi 50 pcs",
+  "price": 175000,
+  "category": "Lainnya",
+  "image": "/catalog/05-mouthpiece-alcoscan-50.png"
+ },
+ {
+  "id": "06",
+  "name": "membran abu stetoskop littmann classic II, dan classic III",
+  "price": 50000,
+  "category": "Stetoskop",
+  "image": "/catalog/06-membran-littmann.png"
+ },
+ {
+  "id": "07",
+  "name": "stetoskop littmann classic II pediatric /stetoskop anak littmann",
+  "price": 1300000,
+  "category": "Stetoskop",
+  "image": "/catalog/07-littmann-classic-ii-anak.png"
+ },
+ {
+  "id": "08",
+  "name": "stetoskop master cardiology",
+  "price": 1000000,
+  "category": "Stetoskop",
+  "image": "/catalog/08-master-cardiology.png"
+ },
+ {
+  "id": "09",
+  "name": "hanna instrument HI-98128 Pocket pHep5 Water Resistant pH Tester",
+  "price": 4000000,
+  "category": "Lab & reagen",
+  "image": "/catalog/09-hanna-hi-98128.png"
+ },
+ {
+  "id": "10",
+  "name": "hanna instrument HI70032 1382ppm 20ml 25 sachet",
+  "price": 980000,
+  "category": "Lab & reagen",
+  "image": "/catalog/10-hi70032-25-sachet.png"
+ },
+ {
+  "id": "11",
+  "name": "hanna instrument HI70032 1382ppm 20ml sachet",
+  "price": 40000,
+  "category": "Lab & reagen",
+  "image": "/catalog/11-hi70032-sachet.png"
+ },
+ {
+  "id": "12",
+  "name": "membran littmann dewasa dan anak",
+  "price": 50000,
+  "category": "Stetoskop",
+  "image": "/catalog/12-membran-dewasa-anak.png"
+ },
+ {
+  "id": "13",
+  "name": "Stetoskop littmann classic II SE",
+  "price": 1116000,
+  "category": "Stetoskop",
+  "image": "/catalog/13-littmann-classic-ii-se.png"
+ },
+ {
+  "id": "14",
+  "name": "HI98312 DiST 6 EC/TDS/Temperature Tester (0.00 to 20.00 mS/cm, 0.00 to 10.00 ppt)",
+  "price": 4000000,
+  "category": "Lab & reagen",
+  "image": "/catalog/14-hi98312-dist6.png"
+ },
+ {
+  "id": "15",
+  "name": "HI98311 DiST 5 EC/TDS/Temperature Tester (0 to 3999 µS/cm, 0 to 2000 ppm)",
+  "price": 4000000,
+  "category": "Lab & reagen",
+  "image": "/catalog/15-hi98311-dist5.png"
+ },
+ {
+  "id": "16",
+  "name": "HI7022 470 mV 25 C ORP Test Solution",
+  "price": 1200000,
+  "category": "Lab & reagen",
+  "image": "/catalog/16-hi7022-orp.png"
+ },
+ {
+  "id": "17",
+  "name": "HI7021 240 mV 25 C ORP Test Solution",
+  "price": 1200000,
+  "category": "Lab & reagen",
+  "image": "/catalog/17-hi7021-orp.png"
+ },
+ {
+  "id": "18",
+  "name": "hanna instruments cairan HI70007 pH 7.01 buffer solution 20 ml",
+  "price": 40000,
+  "category": "Lab & reagen",
+  "image": "/catalog/18-hi70007-buffer.png"
+ },
+ {
+  "id": "19",
+  "name": "mouthpiece alcohol tester at6000 harga satuan",
+  "price": 3000,
+  "category": "Alat ukur",
+  "image": "/catalog/19-mouthpiece-at6000.png"
+ },
+ {
+  "id": "20",
+  "name": "alcohol tester at6000 alat cek alkohol",
+  "price": 190000,
+  "category": "Alat ukur",
+  "image": "/catalog/20-alcohol-tester-at6000.png"
+ },
+ {
+  "id": "21",
+  "name": "hanna HI7030L 12880 µS/cm Conductivity Standard (500mL Bottle)",
+  "price": 650000,
+  "category": "Lab & reagen",
+  "image": ""
+ },
+ {
+  "id": "22",
+  "name": "HI70030P 12880 µS/cm Conductivity Standard 20ml",
+  "price": 55000,
+  "category": "Lab & reagen",
+  "image": ""
+ },
+ {
+  "id": "23",
+  "name": "HI70031P 1413 µS/cm Conductivity Standard 20ml",
+  "price": 55000,
+  "category": "Lab & reagen",
+  "image": ""
+ },
+ {
+  "id": "24",
+  "name": "HI70038P 6.44 g/L ppt TDS Calibration Solution 20ml",
+  "price": 55000,
+  "category": "Lab & reagen",
+  "image": ""
+ },
+ {
+  "id": "25",
+  "name": "HI98100 Checker Plus pH Tester hanna instrument",
+  "price": 2000000,
+  "category": "Lab & reagen",
+  "image": ""
+ },
+ {
+  "id": "26",
+  "name": "HI 70032 1382 ppm tds calibration solution sachet",
+  "price": 50000,
+  "category": "Lab & reagen",
+  "image": ""
+ },
+ {
+  "id": "27",
+  "name": "mouthpiece untuk alcoscan Al 6000 harga 500 pcs",
+  "price": 1547000,
+  "category": "Lainnya",
+  "image": ""
+ },
+ {
+  "id": "28",
+  "name": "Total Chlorine checker Reagents (25 tests) HI711-25",
+  "price": 250000,
+  "category": "Lab & reagen",
+  "image": ""
+ },
+ {
+  "id": "29",
+  "name": "HI711 Total Chlorine Colorimeter - Checker HC hanna instrument",
+  "price": 1800000,
+  "category": "Lab & reagen",
+  "image": ""
+ },
+ {
+  "id": "30",
+  "name": "hanna instrument HI7009L 500ml ph 9.18 calibration solution",
+  "price": 765000,
+  "category": "Lab & reagen",
+  "image": ""
+ },
+ {
+  "id": "31",
+  "name": "ear tip eartips karet telinga stetoskop isi 2 pcs",
+  "price": 15000,
+  "category": "Stetoskop",
+  "image": ""
+ },
+ {
+  "id": "32",
+  "name": "korset sabuk rusuk pengikat rib belt oppo 4073",
+  "price": 510000,
+  "category": "Alat bantu",
+  "image": ""
+ },
+ {
+  "id": "33",
+  "name": "Cupping massage instrument alat bekam cop",
+  "price": 150000,
+  "category": "Alat bantu",
+  "image": ""
+ },
+ {
+  "id": "34",
+  "name": "fetal Doppler ultrasonic alat deteksi detak jantung bayi",
+  "price": 150000,
+  "category": "Alat bantu",
+  "image": ""
+ },
+ {
+  "id": "35",
+  "name": "grafir stetoskop",
+  "price": 100000,
+  "category": "Stetoskop",
+  "image": ""
+ },
+ {
+  "id": "36",
+  "name": "tds hanna dist 4 waterproof EC tester HI 98304",
+  "price": 2000000,
+  "category": "Lab & reagen",
+  "image": ""
+ },
+ {
+  "id": "37",
+  "name": "AXON hearing aid F 16P alat bantu dengar axon",
+  "price": 150000,
+  "category": "Alat bantu",
+  "image": ""
+ },
+ {
+  "id": "38",
+  "name": "oppo 1030 knee stabilizer deker lutut",
+  "price": 725000,
+  "category": "Alat bantu",
+  "image": ""
+ },
+ {
+  "id": "39",
+  "name": "kasur decubitus m6 300B ( hanya kasur)",
+  "price": 900000,
+  "category": "Alat bantu",
+  "image": ""
+ },
+ {
+  "id": "40",
+  "name": "mouthpiece alcofind all tipe AF satuan",
+  "price": 3650,
+  "category": "Lainnya",
+  "image": ""
+ },
+ {
+  "id": "41",
+  "name": "Tensimeter digital pergelangan tangan alat tensi",
+  "price": 350000,
+  "category": "Alat ukur",
+  "image": ""
+ },
+ {
+  "id": "42",
+  "name": "Paket stetoskop littmann classic III full black dan case littmann",
+  "price": 1700000,
+  "category": "Stetoskop",
+  "image": ""
+ },
+ {
+  "id": "43",
+  "name": "Paket stetoskop littmann classic III copper dan case littmann",
+  "price": 1592500,
+  "category": "Stetoskop",
+  "image": ""
+ },
+ {
+  "id": "44",
+  "name": "myofascial physiotherapy massager gun fascial gun alat pijat relaksasi",
+  "price": 250000,
+  "category": "Alat bantu",
+  "image": ""
+ },
+ {
+  "id": "45",
+  "name": "massage gun fascial gun full body alat pijat relaksasi portable KH 550",
+  "price": 150000,
+  "category": "Alat bantu",
+  "image": ""
+ },
+ {
+  "id": "46",
+  "name": "Littmann classic III stetoskop littmann",
+  "price": 1450000,
+  "category": "Stetoskop",
+  "image": ""
+ },
+ {
+  "id": "47",
+  "name": "hanna instrument HI 701 free chlorine colorimeter checker HC",
+  "price": 2500000,
+  "category": "Lab & reagen",
+  "image": ""
+ },
+ {
+  "id": "48",
+  "name": "tensi omron / omron tensimeter digital 7140T bluetooth original",
+  "price": 485000,
+  "category": "Alat ukur",
+  "image": ""
+ },
+ {
+  "id": "49",
+  "name": "paket stetoskop motif kartun bayi dan anak + case",
+  "price": 310000,
+  "category": "Stetoskop",
+  "image": ""
+ },
+ {
+  "id": "50",
+  "name": "paket stetoskop littmann classic III full black edition dan case",
+  "price": 1650000,
+  "category": "Stetoskop",
+  "image": ""
+ },
+ {
+  "id": "51",
+  "name": "Paket stetoskop littmann classic III black dan case",
+  "price": 1500000,
+  "category": "Stetoskop",
+  "image": ""
+ },
+ {
+  "id": "52",
+  "name": "Sarung bantal duduk memory gel / foam",
+  "price": 50000,
+  "category": "Alat bantu",
+  "image": ""
+ },
+ {
+  "id": "53",
+  "name": "kompresor kasur decubitus QDC pump tanpa kasur",
+  "price": 300000,
+  "category": "Alat bantu",
+  "image": ""
+ },
+ {
+  "id": "54",
+  "name": "kasur decubitus M6 300B satuan buat ganti bocor",
+  "price": 100000,
+  "category": "Alat bantu",
+  "image": ""
+ },
+ {
+  "id": "55",
+  "name": "tongkat duduk kursi lipat sholat lansia traveling haji",
+  "price": 400000,
+  "category": "Alat bantu",
+  "image": ""
+ },
+ {
+  "id": "56",
+  "name": "case stethoscope littmann / tempat penyimpanan stetoskop",
+  "price": 119500,
+  "category": "Stetoskop",
+  "image": ""
+ },
+ {
+  "id": "57",
+  "name": "single head stetoskop children cartoon stetoskop kartun anak",
+  "price": 250000,
+  "category": "Stetoskop",
+  "image": ""
+ },
+ {
+  "id": "58",
+  "name": "kasur anti decubitus 300B alternating pressure mattres",
+  "price": 1150000,
+  "category": "Alat bantu",
+  "image": ""
+ },
+ {
+  "id": "59",
+  "name": "kasur anti decubitus QDC original",
+  "price": 450000,
+  "category": "Alat bantu",
+  "image": ""
+ },
+ {
+  "id": "60",
+  "name": "tambalan kasur decubitus",
+  "price": 28000,
+  "category": "Alat bantu",
+  "image": ""
+ },
+ {
+  "id": "61",
+  "name": "tumbler omron botol minum omron edition",
+  "price": 50000,
+  "category": "Lainnya",
+  "image": ""
+ },
+ {
+  "id": "62",
+  "name": "tds hanna dist 3 HI-98303 POCKET CONDUCTIVITY TESTER (0 TO 2000MS/CM)",
+  "price": 2000000,
+  "category": "Lab & reagen",
+  "image": ""
+ },
+ {
+  "id": "63",
+  "name": "Tongkat duduk kursi lipat modern new design traveling,sholat",
+  "price": 1000000,
+  "category": "Alat bantu",
+  "image": ""
+ },
+ {
+  "id": "64",
+  "name": "wing ring bantal duduk donut with pump",
+  "price": 50000,
+  "category": "Alat bantu",
+  "image": ""
+ },
+ {
+  "id": "65",
+  "name": "bantal duduk tulang ekor memory foam/gel empuk nyaman untuk duduk lama",
+  "price": 255000,
+  "category": "Alat bantu",
+  "image": ""
+ },
+ {
+  "id": "66",
+  "name": "HI-733 Ammonia High Range Handheld Colorimeter (0.0-99.9ppm) Checker",
+  "price": 2000000,
+  "category": "Lab & reagen",
+  "image": ""
+ },
+ {
+  "id": "67",
+  "name": "Pantyhose Stocking CCL Il Soft Beige Relaxan medicale- Oppo 2180 italy",
+  "price": 440000,
+  "category": "Alat bantu",
+  "image": ""
+ },
+ {
+  "id": "68",
+  "name": "Dermafix T 10x12 cm Isi 10 OneMed",
+  "price": 60000,
+  "category": "Alat bantu",
+  "image": ""
+ },
+ {
+  "id": "69",
+  "name": "electrode storage solution hanna 70300l 500ml",
+  "price": 650000,
+  "category": "Lab & reagen",
+  "image": ""
+ },
+ {
+  "id": "70",
+  "name": "cleaning solution hanna HI7061L general purpose",
+  "price": 650000,
+  "category": "Lab & reagen",
+  "image": ""
+ },
+ {
+  "id": "71",
+  "name": "extra packing tambahan dus/buble warp",
+  "price": 2000,
+  "category": "Lainnya",
+  "image": ""
+ },
+ {
+  "id": "72",
+  "name": "ph hanna buffer solution ph4/ph7/ph10 100 ml",
+  "price": 115000,
+  "category": "Lab & reagen",
+  "image": ""
+ },
+ {
+  "id": "73",
+  "name": "buffer solution ph hanna ph4/ph7/ph10 500ml",
+  "price": 220000,
+  "category": "Lab & reagen",
+  "image": ""
+ },
+ {
+  "id": "74",
+  "name": "multi 6 parameter orient gene alat tes harga 1 box",
+  "price": 1210000,
+  "category": "Lainnya",
+  "image": ""
+ },
+ {
+  "id": "75",
+  "name": "Rapid Test Orient Gene HbsAb Device",
+  "price": 240000,
+  "category": "Lab & reagen",
+  "image": ""
+ },
+ {
+  "id": "76",
+  "name": "hiv device orient gene",
+  "price": 365000,
+  "category": "Lab & reagen",
+  "image": ""
+ },
+ {
+  "id": "77",
+  "name": "oppo 1084 wrist thumb support",
+  "price": 300000,
+  "category": "Alat bantu",
+  "image": ""
+ },
+ {
+  "id": "78",
+  "name": "OMRON Manset Dewasa ukuran (L)jumbo soft cuff 22-42 cm",
+  "price": 220000,
+  "category": "Alat bantu",
+  "image": ""
+ },
+ {
+  "id": "79",
+  "name": "TEST DENGUE NS1 MONOTES. 1 Kit isi 25 Test.",
+  "price": 920000,
+  "category": "Lab & reagen",
+  "image": ""
+ },
+ {
+  "id": "80",
+  "name": "Masker Oksigen O2 Resources anak/Oxygen Mask Original",
+  "price": 5000,
+  "category": "Alat bantu",
+  "image": ""
+ },
+ {
+  "id": "81",
+  "name": "Baterai Panasonic Kancing bulat 2032",
+  "price": 4000,
+  "category": "Lainnya",
+  "image": ""
+ },
+ {
+  "id": "82",
+  "name": "pulse oxymeter lk87 oximeter murah",
+  "price": 60000,
+  "category": "Alat ukur",
+  "image": ""
+ }
+];
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const rupiah = (n) => "Rp" + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+const waLink = (teks) => "https://wa.me/" + TOKO.wa + (teks ? "?text=" + encodeURIComponent(teks) : "");
+const kurirDipakai = TOKO.kurir.map((k) => k.split(" ")[0]).join(" · ");
+
+let query = "";
+let category = "Semua";
+let slide = 0;
+let terkirim = null;
+let lines = baca("anekamedica-pesanan", []);
+let draft = Object.assign(
+  { name: "", address: "", kecamatan: "", city: "", pos: "", courier: TOKO.kurir[0], note: "", invoice: false, invoiceName: "" },
+  baca("anekamedica-alamat", {})
+);
+
+function baca(kunci, awal) {
+  try { return JSON.parse(localStorage.getItem(kunci)) || awal; } catch (e) { return awal; }
+}
+function simpan() {
+  try {
+    localStorage.setItem("anekamedica-pesanan", JSON.stringify(lines));
+    localStorage.setItem("anekamedica-alamat", JSON.stringify(draft));
+  } catch (e) { /* penyimpanan browser mati: pesanan tetap jalan, hanya tidak diingat */ }
+}
+
+/* ---------- bagian statis yang bergantung pada TOKO ---------- */
+function renderToko() {
+  document.title = TOKO.nama + (TOKO.kota ? " · " + TOKO.kota : "") + " · Alat kesehatan";
+  $("nama-toko").textContent = TOKO.nama;
+  const sub = [TOKO.kota, TOKO.rating ? "Rating " + TOKO.rating : ""].filter(Boolean).join(" · ");
+  $("sub-toko").textContent = sub;
+  $("sub-toko").hidden = !sub;
+
+  const pita = [
+    [TOKO.nama, TOKO.kota].filter(Boolean).join(" · "),
+    "Ongkir dihitung setelah alamat lengkap masuk",
+    "Kurir: " + kurirDipakai,
+    WA_OK ? "Pembayaran dikonfirmasi penjual di WhatsApp" : "Belanja lewat etalase Shopee kami"
+  ].map((t) => "<span>" + esc(t) + "</span>");
+  $("pita").innerHTML = pita.join("") + pita.map((s) => s.replace("<span>", '<span aria-hidden="true">')).join("");
+
+  $("info").innerHTML = `
+    <div class="kotak biru">
+      <div class="kecil">${TOKO.kota ? "Dikirim dari " + esc(TOKO.kota) : "Pengiriman"}</div>
+      <h2>Ongkir dihitung setelah alamat masuk.</h2>
+      <p>Pilih J&amp;T, JNE, SiCepat, TIKI, atau POS. Penjual membalas dengan nominal ongkir sebelum Anda transfer.</p>
+    </div>
+    <div class="kotak merah-kotak">
+      ${WA_OK ? `
+      <div class="kecil">Pesan lewat WhatsApp</div>
+      <h2>Kirim pesanan, bayar setelah ongkir jelas.</h2>
+      <p>Barang dikirim setelah dana tercatat masuk di rekening penjual.</p>` : `
+      <div class="kecil">Pesan lewat Shopee</div>
+      <h2>Chat WhatsApp toko belum dibuka.</h2>
+      <p>Checkout dan pembayaran lewat <a href="${esc(TOKO.shopee)}" target="_blank" rel="noopener">etalase Shopee kami</a>.</p>`}
+    </div>`;
+
+  $("langkah").innerHTML = `
+    <article><div class="nomor">1</div><h2>Pilih barang</h2><p>Dari banner, kotak pencarian, atau kategori.</p></article>
+    <article><div class="nomor">2</div><h2>Isi alamat</h2><p>Nama penerima, alamat, kecamatan, kota, kode pos, dan kurir.</p></article>
+    <article><div class="nomor">3</div><h2>${WA_OK ? "Kirim ke WhatsApp" : "Lanjut di Shopee"}</h2><p>${WA_OK ? "Penjual membalas dengan ongkir dan nomor rekening." : "Pesanan diselesaikan lewat etalase Shopee."}</p></article>`;
+
+  $("jaminan").innerHTML = [
+    WA_OK ? "Chat lewat WhatsApp" + (TOKO.jamBalas ? ", balasan " + TOKO.jamBalas : "") : (TOKO.jamBalas ? "Balasan " + TOKO.jamBalas : ""),
+    "Pembayaran dikonfirmasi penjual sebelum barang dikirim.",
+    "Dikirim setelah ongkir dan pembayaran selesai."
+  ].filter(Boolean).map((t) => "<p>" + esc(t) + "</p>").join("");
+
+  $("kaki").innerHTML = `
+    <div>
+      <img class="logo" src="/logo.jpg" alt="" width="44" height="44" loading="lazy">
+      <p class="nama">${esc(TOKO.nama)}</p>
+      ${TOKO.kota ? `<p class="kecil">${esc(TOKO.nama)} · ${esc(TOKO.kota)}</p>` : ""}
+      ${TOKO.alamat ? `<p class="kecil">${esc(TOKO.alamat)}</p>` : ""}
+      ${TOKO.jamBalas ? `<p class="kecil">Jam balas: ${esc(TOKO.jamBalas)}</p>` : ""}
+      ${TOKO.izinToko ? `<p class="kecil">Izin: ${esc(TOKO.izinToko)}</p>` : ""}
+      <p><a href="${esc(TOKO.shopee)}" target="_blank" rel="noopener">Etalase Shopee ${esc(TOKO.nama)}</a></p>
+    </div>
+    <div>
+      <strong>Kurir</strong>
+      <p class="kecil">${TOKO.kurir.map(esc).join("<br>")}</p>
+    </div>
+    <div>
+      <strong>Pesanan</strong>
+      <p class="kecil">${WA_OK ? "Pilih barang di sini, ongkir dan pembayaran dibahas di WhatsApp." : "Pilih barang di sini, pembelian diselesaikan di Shopee."}</p>
+      <img class="wm" src="/henqiesoo.png" alt="Henqiesoo" loading="lazy" onerror="this.remove()">
+    </div>`;
+
+  $("kurir").innerHTML = TOKO.kurir.map((k) => `<option>${esc(k)}</option>`).join("");
+  $("blok-invoice").hidden = !TOKO.layaniInvoice;
+  const wa = $("wa");
+  wa.hidden = !WA_OK;
+  if (WA_OK) wa.href = waLink("Halo " + TOKO.nama + ", saya mau tanya barang.");
+
+  $("catatan-laci").innerHTML = WA_OK ? "" : `
+    <p class="catatan-laci">Pemesanan lewat WhatsApp belum dibuka. Silakan beli di Shopee.<br>
+    <a class="tombol-ghost" style="margin-top:8px" href="${esc(TOKO.shopee)}" target="_blank" rel="noopener">Buka Shopee</a></p>`;
+}
+
+/* ---------- banner: hanya bagian ini yang digambar ulang oleh timer ---------- */
+const unggulan = products.filter((p) => p.image).slice(0, 5);
+
+function renderBanner() {
+  const p = unggulan[slide];
+  if (!p) { $("banner").hidden = true; return; }
+  $("banner").innerHTML = `
+    <div>
+      <div class="kecil" style="color:var(--brand);font-weight:700">Pilihan etalase</div>
+      <h1>${esc(p.name)}</h1>
+      <p class="kecil">Harga sudah tertera. Masukkan ke pesanan, isi alamat, lalu ${WA_OK ? "kirim lewat WhatsApp" : "lanjut di Shopee"}.</p>
+      <p class="harga">${rupiah(p.price)}</p>
+      <button class="merah" type="button" data-tambah="${p.id}">Masukkan pesanan</button>
+    </div>
+    <img class="foto-banner" src="${p.image}" alt="${esc(p.name)}" width="320" height="320">`;
+  document.querySelectorAll("#titik button").forEach((b, i) => b.classList.toggle("nyala", i === slide));
+}
+function renderTitik() {
+  $("titik").innerHTML = unggulan.map((_, i) =>
+    `<button type="button" data-slide="${i}" aria-label="Banner ${i + 1}"></button>`).join("");
+}
+
+let timer = null;
+let jeda = false;
+const kurangGerak = window.matchMedia("(prefers-reduced-motion: reduce)");
+function hentiTimer() { clearInterval(timer); timer = null; }
+function mulaiTimer() {
+  hentiTimer();
+  if (kurangGerak.matches || document.hidden || jeda || unggulan.length < 2) return;
+  timer = setInterval(() => { slide = (slide + 1) % unggulan.length; renderBanner(); }, 6000);
+}
+function tahan(nilai) { jeda = nilai; nilai ? hentiTimer() : mulaiTimer(); }
+["banner", "titik"].forEach((id) => {
+  const el = $(id);
+  el.addEventListener("mouseenter", () => tahan(true));
+  el.addEventListener("mouseleave", () => { if (!el.contains(document.activeElement)) tahan(false); });
+  el.addEventListener("focusin", () => tahan(true));
+  el.addEventListener("focusout", () => { if (!el.matches(":hover")) tahan(false); });
+});
+document.addEventListener("visibilitychange", mulaiTimer);
+kurangGerak.addEventListener("change", mulaiTimer);
+
+/* ---------- menu dan etalase ---------- */
+function renderMenu() {
+  $("menu").innerHTML = KATEGORI.map((n) =>
+    `<button type="button" data-kategori="${esc(n)}" class="${n === category ? "aktif" : ""}">${esc(n)}</button>`).join("") +
+    `<a href="${esc(TOKO.shopee)}" target="_blank" rel="noopener">Shopee</a>`;
+  $("kategori").innerHTML = KATEGORI.map((n) =>
+    `<button type="button" class="${n === category ? "aktif" : ""}" data-kategori="${esc(n)}">${esc(n)}</button>`).join("");
+}
+
+const IKON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 8v8M8 12h8"/></svg>`;
+
+function kartu(p) {
+  const foto = p.image
+    ? `<img src="${p.image}" alt="${esc(p.name)}" loading="lazy" decoding="async" width="540" height="540">`
+    : `<div class="tanpa-foto">${IKON}${WA_OK
+        ? `<a href="${esc(waLink("Halo " + TOKO.nama + ", boleh minta foto " + p.name + "?"))}" target="_blank" rel="noopener">Minta foto</a>`
+        : `<a href="${esc(TOKO.shopee)}" target="_blank" rel="noopener">Lihat di Shopee</a>`}</div>`;
+  return `
+    <article class="kartu">
+      <div class="gambar">${foto}</div>
+      <div class="label">${esc(p.category)}</div>
+      <div class="isi">
+        <h3>${esc(p.name)}</h3>
+        <p class="harga">${rupiah(p.price)}</p>
+        <button class="tambah" type="button" data-tambah="${p.id}">Tambah</button>
+      </div>
+    </article>`;
+}
+
+function renderEtalase() {
+  const kata = query.trim().toLowerCase();
+  const tampil = products.filter((p) =>
+    (category === "Semua" || p.category === category) && (!kata || p.name.toLowerCase().includes(kata)));
+  $("hitungan").textContent = tampil.length + " dari " + products.length + " barang.";
+  const grup = KATEGORI.filter((n) => n !== "Semua")
+    .map((n) => ({
+      nama: n,
+      /* barang berfoto di depan; urutan asal dijaga dalam tiap kelompok */
+      items: [...tampil.filter((p) => p.category === n && p.image), ...tampil.filter((p) => p.category === n && !p.image)]
+    }))
+    .filter((g) => g.items.length);
+  $("daftar").innerHTML = grup.length
+    ? grup.map((g) => `<h3 class="grup">${esc(g.nama)}</h3><div class="grid">${g.items.map(kartu).join("")}</div>`).join("")
+    : "<p>Tidak ada barang dengan kata itu.</p>";
+  renderMenu();
+}
+
+/* ---------- keranjang ---------- */
+function rinciKeranjang() {
+  return lines.map((l) => {
+    const barang = products.find((p) => p.id === l.id);
+    return barang ? { barang, qty: l.qty } : null;
+  }).filter(Boolean);
+}
+function kekurangan() {
+  const k = [];
+  if (!WA_OK) k.push("Pemesanan lewat WhatsApp belum dibuka. Silakan beli di Shopee");
+  if (!rinciKeranjang().length) k.push("pilih minimal 1 barang");
+  if (!draft.name.trim()) k.push("isi nama penerima");
+  if (!draft.address.trim()) k.push("isi alamat lengkap");
+  if (!draft.kecamatan.trim()) k.push("isi kecamatan");
+  if (!draft.city.trim()) k.push("isi kota/kabupaten");
+  if (!/^\d{5}$/.test(draft.pos.trim())) k.push("isi kode pos 5 angka");
+  if (TOKO.layaniInvoice && draft.invoice && !draft.invoiceName.trim()) k.push("isi nama untuk invoice");
+  return k;
+}
+function renderKeranjang() {
+  const rinci = rinciKeranjang();
+  const jumlah = rinci.reduce((t, i) => t + i.qty, 0);
+  const subtotal = rinci.reduce((t, i) => t + i.barang.price * i.qty, 0);
+  $("jumlah").textContent = jumlah;
+  $("subtotal").textContent = "Subtotal barang " + rupiah(subtotal) + ". Ongkir belum termasuk.";
+  $("isi-keranjang").innerHTML = rinci.length ? rinci.map((i) => `
+    <div class="item">
+      <p><strong>${esc(i.barang.name)}</strong><br>${rupiah(i.barang.price * i.qty)}</p>
+      <div class="baris">
+        <button type="button" data-qty="${i.barang.id}" data-ubah="-1" aria-label="Kurangi">−</button>
+        <span>${i.qty}</span>
+        <button type="button" data-qty="${i.barang.id}" data-ubah="1" aria-label="Tambah">+</button>
+      </div>
+    </div>`).join("") : '<p class="kecil">Belum ada barang.</p>';
+  $("status-kirim").innerHTML = terkirim
+    ? `<div class="terkirim">Pesanan <strong>${terkirim}</strong> dibuka di WhatsApp. Kalau sudah terkirim, kosongkan pesanan ini.</div>` : "";
+  const kurang = kekurangan();
+  $("kirim").disabled = kurang.length > 0;
+  $("petunjuk").textContent = !kurang.length ? "" :
+    (WA_OK ? "Tombol kirim aktif setelah Anda: " + kurang.join(", ") + "." : kurang[0] + ".");
+  $("kosongkan").hidden = !rinci.length;
+}
+function tambah(id) {
+  const ada = lines.find((l) => l.id === id);
+  if (ada) ada.qty += 1; else lines.push({ id, qty: 1 });
+  terkirim = null;
+  simpan();
+  renderKeranjang();
+}
+function ubahQty(id, qty) {
+  lines = qty < 1 ? lines.filter((l) => l.id !== id) : lines.map((l) => (l.id === id ? { id, qty } : l));
+  terkirim = null;
+  simpan();
+  renderKeranjang();
+}
+
+/* ---------- laci pesanan ---------- */
+let pemicu = null;
+function bukaLaci() {
+  pemicu = document.activeElement;
+  $("laci").hidden = false;
+  $("halaman").inert = true;
+  document.body.classList.add("terkunci");
+  $("tutup").focus();
+}
+function tutupLaci() {
+  if ($("laci").hidden) return;
+  $("laci").hidden = true;
+  $("halaman").inert = false;
+  document.body.classList.remove("terkunci");
+  if (pemicu && pemicu.focus) pemicu.focus();
+}
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") tutupLaci(); });
+$("laci").addEventListener("click", (e) => { if (e.target === $("laci")) tutupLaci(); });
+
+/* ---------- kirim ke WhatsApp ---------- */
+function kodePesanan() {
+  const d = new Date();
+  const dua = (n) => String(n).padStart(2, "0");
+  return "AM-" + dua(d.getFullYear() % 100) + dua(d.getMonth() + 1) + dua(d.getDate()) + "-" +
+    dua(d.getHours()) + dua(d.getMinutes()) + dua(Math.floor(Math.random() * 100));
+}
+function kirimWhatsApp() {
+  if (kekurangan().length) return;
+  const rinci = rinciKeranjang();
+  const subtotal = rinci.reduce((t, i) => t + i.barang.price * i.qty, 0);
+  const kode = kodePesanan();
+  const teks = [
+    "Halo " + TOKO.nama + ", saya mau pesan.",
+    "Kode pesanan: " + kode,
+    "",
+    ...rinci.map((i, n) => (n + 1) + ". " + i.barang.name + " x" + i.qty + " — " + rupiah(i.barang.price * i.qty)),
+    "",
+    "Subtotal barang: " + rupiah(subtotal),
+    "Ekspedisi: " + draft.courier,
+    "Penerima: " + draft.name.trim(),
+    "Alamat: " + draft.address.trim() + ", Kec. " + draft.kecamatan.trim() + ", " + draft.city.trim() + " " + draft.pos.trim(),
+    TOKO.layaniInvoice && draft.invoice ? "Invoice: ya, atas nama " + draft.invoiceName.trim() : null,
+    draft.note.trim() ? "Catatan: " + draft.note.trim() : null,
+    "",
+    "Mohon info ongkir dan nomor rekening. Setelah transfer, saya kabari di chat ini."
+  ].filter((baris) => baris !== null).join("\n");
+  window.open(waLink(teks), "_blank", "noopener");
+  terkirim = kode;
+  renderKeranjang();
+}
+
+/* ---------- event ---------- */
+document.body.addEventListener("click", (e) => {
+  const t = e.target.closest("button");
+  if (!t) return;
+  if (t.dataset.tambah) tambah(t.dataset.tambah);
+  else if (t.dataset.kategori) {
+    category = t.dataset.kategori;
+    renderEtalase();
+    $("etalase").scrollIntoView({ behavior: kurangGerak.matches ? "auto" : "smooth" });
+  } else if (t.dataset.slide) { slide = Number(t.dataset.slide); renderBanner(); }
+  else if (t.dataset.qty) {
+    const baris = lines.find((l) => l.id === t.dataset.qty);
+    if (baris) ubahQty(baris.id, baris.qty + Number(t.dataset.ubah));
+  } else if (t.id === "buka") bukaLaci();
+  else if (t.id === "tutup") tutupLaci();
+  else if (t.id === "kirim") kirimWhatsApp();
+  else if (t.id === "kosongkan") {
+    lines = []; terkirim = null; simpan(); renderKeranjang();
+  }
+});
+
+const BIDANG = { nama: "name", alamat: "address", kecamatan: "kecamatan", kota: "city", pos: "pos", kurir: "courier", catatan: "note", "nama-invoice": "invoiceName" };
+Object.keys(BIDANG).forEach((id) => {
+  const el = $(id);
+  if (id === "kurir" && !TOKO.kurir.includes(draft.courier)) draft.courier = TOKO.kurir[0];
+  el.value = draft[BIDANG[id]];
+  el.addEventListener("input", () => {
+    draft[BIDANG[id]] = id === "pos" ? (el.value = el.value.replace(/\D/g, "")) : el.value;
+    simpan();
+    renderKeranjang();
+  });
+});
+$("invoice").checked = !!draft.invoice;
+$("label-nama-invoice").hidden = !draft.invoice;
+$("invoice").addEventListener("change", (e) => {
+  draft.invoice = e.target.checked;
+  $("label-nama-invoice").hidden = !draft.invoice;
+  simpan();
+  renderKeranjang();
+});
+$("cari").addEventListener("input", (e) => { query = e.target.value; renderEtalase(); });
+
+renderToko();
+renderTitik();
+renderBanner();
+renderEtalase();
+renderKeranjang();
+mulaiTimer();
+</script>
+</body>
+</html>
