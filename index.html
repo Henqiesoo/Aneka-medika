@@ -62,7 +62,8 @@
 
   .banner { margin-top: 16px; background: white; border: 1px solid var(--line); border-radius: 12px; display: grid; gap: 16px; padding: 24px; }
   @media (min-width: 800px) { .banner { grid-template-columns: 1fr 1fr; align-items: center; } }
-  .banner h1 { margin: 8px 0; font-size: 32px; line-height: 1.15; text-transform: capitalize; }
+  .banner h1 { margin: 8px 0; font-size: 32px; line-height: 1.15; overflow-wrap: anywhere; }
+  .banner h1::first-letter, .isi h3::first-letter, .baris-barang .nm::first-letter { text-transform: uppercase; }
   .harga { color: var(--primary); font-weight: 800; font-size: 24px; margin: 8px 0; }
   .merah, .tambah, .tombol-ghost { border: 0; background: var(--primary); color: white; height: 44px; border-radius: 999px; padding: 0 18px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
   .tambah { width: 100%; border-radius: 8px; margin-top: auto; }
@@ -103,7 +104,7 @@
   .tanpa-foto a { font-size: 12px; font-weight: 700; color: var(--brand); display: inline-flex; align-items: center; min-height: 44px; padding: 0 8px; }
   .label { background: var(--brand); color: white; font-size: 12px; font-weight: 700; padding: 8px 12px; }
   .isi { padding: 12px; display: flex; flex-direction: column; flex: 1; }
-  .isi h3 { margin: 0; font-size: 14px; text-transform: capitalize; overflow-wrap: anywhere; }
+  .isi h3 { margin: 0; font-size: 14px; overflow-wrap: anywhere; }
   .isi .harga { font-size: 16px; margin: 8px 0 0; }
 
   .langkah { display: grid; gap: 12px; margin: 24px 0 40px; }
@@ -197,7 +198,7 @@
   .baris-barang .ik svg { width: 26px; height: 26px; }
   .baris-barang { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto auto; gap: 12px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--line); }
   .baris-barang:last-child { border-bottom: 0; }
-  .baris-barang .nm { font-size: 14px; font-weight: 600; text-transform: capitalize; overflow-wrap: anywhere; }
+  .baris-barang .nm { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
   .baris-barang .nm a { display: inline-block; margin-top: 2px; font-size: 12px; font-weight: 700; color: var(--brand); text-transform: none; }
   .baris-barang .hg { color: var(--primary); font-weight: 800; white-space: nowrap; font-variant-numeric: tabular-nums; }
   .baris-barang button { height: 40px; min-width: 44px; padding: 0 16px; border: 0; border-radius: 8px; background: var(--primary); color: white; font-weight: 700; }
@@ -207,6 +208,8 @@
     .baris-barang .nm { grid-column: 2 / -1; }
   }
   @media (max-width: 599px) { .naik { right: auto; left: 16px; bottom: 16px; } }
+  .kode { font-size: 12px; font-weight: 400; color: var(--muted); text-transform: none; margin: 2px 0 0; }
+  .isi .kode + .harga { margin-top: 6px; }
 </style>
 </head>
 <body>
@@ -238,7 +241,7 @@
       <h2>Etalase alat kesehatan</h2>
       <p class="kecil">Harga dapat berubah sewaktu-waktu. Harga final dikonfirmasi penjual sebelum transfer.</p>
       <p class="kecil" id="hitungan" aria-live="polite"></p>
-      <div id="daftar"></div>
+      <div id="daftar"><p class="kecil">Memuat daftar barang…</p></div>
     </section>
     <section class="berita" id="berita" hidden></section>
     <section class="langkah" id="langkah"></section>
@@ -312,11 +315,7 @@ const TOKO = {
 const WA_OK = /^62[1-9]\d{7,12}$/.test(TOKO.wa);
 const KATEGORI = ["Semua", "Stetoskop", "Alat ukur", "Lab & reagen", "Alat bantu", "Lainnya"];
 
-/* Link video Instagram per barang. Isi id barang dan link videonya; barang tanpa link tidak menampilkan tombol video.
-   Contoh: "01": "https://www.instagram.com/reel/XXXXXXXXXXX/" */
-const LINK_IG = {
-};
-const linkIg = (id) => (/^https:\/\/(www\.)?instagram\.com\//.test(LINK_IG[id] || "") ? LINK_IG[id] : "");
+const linkIg = (p) => (/^https:\/\/(www\.)?instagram\.com\//.test(p.ig || "") ? p.ig : "");
 const igProfil = /^https:\/\/(www\.)?instagram\.com\//.test(TOKO.instagram) ? TOKO.instagram : "";
 
 /* Banner promo (iklan). Kosong = bagian ini tidak tampil. Simpan gambar di folder /iklan (saran 1200x500).
@@ -329,583 +328,44 @@ const BERITA = [
 ];
 const linkAman = (u) => (/^(https:\/\/|\/)/.test(u || "") ? u : "");
 
-/* Satu objek = satu barang. image "" = belum ada foto. */
-const products = [
- {
-  "id": "01",
-  "name": "Littmann classic III stetoskop 3M original",
-  "price": 1456000,
-  "category": "Stetoskop",
-  "image": "/catalog/01-littmann-classic-iii.png"
- },
- {
-  "id": "02",
-  "name": "PH hanna 98107 New Original",
-  "price": 1283400,
-  "category": "Lab & reagen",
-  "image": "/catalog/02-hanna-ph-98107.png"
- },
- {
-  "id": "03",
-  "name": "hanna instrument HI-98121 Pocket pH and ORP (Redox) Tester",
-  "price": 7000000,
-  "category": "Lab & reagen",
-  "image": "/catalog/03-hanna-hi-98121.png"
- },
- {
-  "id": "04",
-  "name": "laringoskop riester blade 00",
-  "price": 1500000,
-  "category": "Lainnya",
-  "image": "/catalog/04-laringoskop-riester.png"
- },
- {
-  "id": "05",
-  "name": "mouthpiece alcoscan Al 6000 isi 50 pcs",
-  "price": 175000,
-  "category": "Lainnya",
-  "image": "/catalog/05-mouthpiece-alcoscan-50.png"
- },
- {
-  "id": "06",
-  "name": "membran abu stetoskop littmann classic II, dan classic III",
-  "price": 50000,
-  "category": "Stetoskop",
-  "image": "/catalog/06-membran-littmann.png"
- },
- {
-  "id": "07",
-  "name": "stetoskop littmann classic II pediatric /stetoskop anak littmann",
-  "price": 1300000,
-  "category": "Stetoskop",
-  "image": "/catalog/07-littmann-classic-ii-anak.png"
- },
- {
-  "id": "08",
-  "name": "stetoskop master cardiology",
-  "price": 1000000,
-  "category": "Stetoskop",
-  "image": "/catalog/08-master-cardiology.png"
- },
- {
-  "id": "09",
-  "name": "hanna instrument HI-98128 Pocket pHep5 Water Resistant pH Tester",
-  "price": 4000000,
-  "category": "Lab & reagen",
-  "image": "/catalog/09-hanna-hi-98128.png"
- },
- {
-  "id": "10",
-  "name": "hanna instrument HI70032 1382ppm 20ml 25 sachet",
-  "price": 980000,
-  "category": "Lab & reagen",
-  "image": "/catalog/10-hi70032-25-sachet.png"
- },
- {
-  "id": "11",
-  "name": "hanna instrument HI70032 1382ppm 20ml sachet",
-  "price": 40000,
-  "category": "Lab & reagen",
-  "image": "/catalog/11-hi70032-sachet.png"
- },
- {
-  "id": "12",
-  "name": "membran littmann dewasa dan anak",
-  "price": 50000,
-  "category": "Stetoskop",
-  "image": "/catalog/12-membran-dewasa-anak.png"
- },
- {
-  "id": "13",
-  "name": "Stetoskop littmann classic II SE",
-  "price": 1116000,
-  "category": "Stetoskop",
-  "image": "/catalog/13-littmann-classic-ii-se.png"
- },
- {
-  "id": "14",
-  "name": "HI98312 DiST 6 EC/TDS/Temperature Tester (0.00 to 20.00 mS/cm, 0.00 to 10.00 ppt)",
-  "price": 4000000,
-  "category": "Lab & reagen",
-  "image": "/catalog/14-hi98312-dist6.png"
- },
- {
-  "id": "15",
-  "name": "HI98311 DiST 5 EC/TDS/Temperature Tester (0 to 3999 µS/cm, 0 to 2000 ppm)",
-  "price": 4000000,
-  "category": "Lab & reagen",
-  "image": "/catalog/15-hi98311-dist5.png"
- },
- {
-  "id": "16",
-  "name": "HI7022 470 mV 25 C ORP Test Solution",
-  "price": 1200000,
-  "category": "Lab & reagen",
-  "image": "/catalog/16-hi7022-orp.png"
- },
- {
-  "id": "17",
-  "name": "HI7021 240 mV 25 C ORP Test Solution",
-  "price": 1200000,
-  "category": "Lab & reagen",
-  "image": "/catalog/17-hi7021-orp.png"
- },
- {
-  "id": "18",
-  "name": "hanna instruments cairan HI70007 pH 7.01 buffer solution 20 ml",
-  "price": 40000,
-  "category": "Lab & reagen",
-  "image": "/catalog/18-hi70007-buffer.png"
- },
- {
-  "id": "19",
-  "name": "mouthpiece alcohol tester at6000 harga satuan",
-  "price": 3000,
-  "category": "Alat ukur",
-  "image": "/catalog/19-mouthpiece-at6000.png"
- },
- {
-  "id": "20",
-  "name": "alcohol tester at6000 alat cek alkohol",
-  "price": 190000,
-  "category": "Alat ukur",
-  "image": "/catalog/20-alcohol-tester-at6000.png"
- },
- {
-  "id": "21",
-  "name": "hanna HI7030L 12880 µS/cm Conductivity Standard (500mL Bottle)",
-  "price": 650000,
-  "category": "Lab & reagen",
-  "image": ""
- },
- {
-  "id": "22",
-  "name": "HI70030P 12880 µS/cm Conductivity Standard 20ml",
-  "price": 55000,
-  "category": "Lab & reagen",
-  "image": ""
- },
- {
-  "id": "23",
-  "name": "HI70031P 1413 µS/cm Conductivity Standard 20ml",
-  "price": 55000,
-  "category": "Lab & reagen",
-  "image": ""
- },
- {
-  "id": "24",
-  "name": "HI70038P 6.44 g/L ppt TDS Calibration Solution 20ml",
-  "price": 55000,
-  "category": "Lab & reagen",
-  "image": ""
- },
- {
-  "id": "25",
-  "name": "HI98100 Checker Plus pH Tester hanna instrument",
-  "price": 2000000,
-  "category": "Lab & reagen",
-  "image": ""
- },
- {
-  "id": "26",
-  "name": "HI 70032 1382 ppm tds calibration solution sachet",
-  "price": 50000,
-  "category": "Lab & reagen",
-  "image": ""
- },
- {
-  "id": "27",
-  "name": "mouthpiece untuk alcoscan Al 6000 harga 500 pcs",
-  "price": 1547000,
-  "category": "Lainnya",
-  "image": ""
- },
- {
-  "id": "28",
-  "name": "Total Chlorine checker Reagents (25 tests) HI711-25",
-  "price": 250000,
-  "category": "Lab & reagen",
-  "image": ""
- },
- {
-  "id": "29",
-  "name": "HI711 Total Chlorine Colorimeter - Checker HC hanna instrument",
-  "price": 1800000,
-  "category": "Lab & reagen",
-  "image": ""
- },
- {
-  "id": "30",
-  "name": "hanna instrument HI7009L 500ml ph 9.18 calibration solution",
-  "price": 765000,
-  "category": "Lab & reagen",
-  "image": ""
- },
- {
-  "id": "31",
-  "name": "ear tip eartips karet telinga stetoskop isi 2 pcs",
-  "price": 15000,
-  "category": "Stetoskop",
-  "image": ""
- },
- {
-  "id": "32",
-  "name": "korset sabuk rusuk pengikat rib belt oppo 4073",
-  "price": 510000,
-  "category": "Alat bantu",
-  "image": ""
- },
- {
-  "id": "33",
-  "name": "Cupping massage instrument alat bekam cop",
-  "price": 150000,
-  "category": "Alat bantu",
-  "image": ""
- },
- {
-  "id": "34",
-  "name": "fetal Doppler ultrasonic alat deteksi detak jantung bayi",
-  "price": 150000,
-  "category": "Alat bantu",
-  "image": ""
- },
- {
-  "id": "35",
-  "name": "grafir stetoskop",
-  "price": 100000,
-  "category": "Stetoskop",
-  "image": ""
- },
- {
-  "id": "36",
-  "name": "tds hanna dist 4 waterproof EC tester HI 98304",
-  "price": 2000000,
-  "category": "Lab & reagen",
-  "image": ""
- },
- {
-  "id": "37",
-  "name": "AXON hearing aid F 16P alat bantu dengar axon",
-  "price": 150000,
-  "category": "Alat bantu",
-  "image": ""
- },
- {
-  "id": "38",
-  "name": "oppo 1030 knee stabilizer deker lutut",
-  "price": 725000,
-  "category": "Alat bantu",
-  "image": ""
- },
- {
-  "id": "39",
-  "name": "kasur decubitus m6 300B ( hanya kasur)",
-  "price": 900000,
-  "category": "Alat bantu",
-  "image": ""
- },
- {
-  "id": "40",
-  "name": "mouthpiece alcofind all tipe AF satuan",
-  "price": 3650,
-  "category": "Lainnya",
-  "image": ""
- },
- {
-  "id": "41",
-  "name": "Tensimeter digital pergelangan tangan alat tensi",
-  "price": 350000,
-  "category": "Alat ukur",
-  "image": ""
- },
- {
-  "id": "42",
-  "name": "Paket stetoskop littmann classic III full black dan case littmann",
-  "price": 1700000,
-  "category": "Stetoskop",
-  "image": ""
- },
- {
-  "id": "43",
-  "name": "Paket stetoskop littmann classic III copper dan case littmann",
-  "price": 1592500,
-  "category": "Stetoskop",
-  "image": ""
- },
- {
-  "id": "44",
-  "name": "myofascial physiotherapy massager gun fascial gun alat pijat relaksasi",
-  "price": 250000,
-  "category": "Alat bantu",
-  "image": ""
- },
- {
-  "id": "45",
-  "name": "massage gun fascial gun full body alat pijat relaksasi portable KH 550",
-  "price": 150000,
-  "category": "Alat bantu",
-  "image": ""
- },
- {
-  "id": "46",
-  "name": "Littmann classic III stetoskop littmann",
-  "price": 1450000,
-  "category": "Stetoskop",
-  "image": ""
- },
- {
-  "id": "47",
-  "name": "hanna instrument HI 701 free chlorine colorimeter checker HC",
-  "price": 2500000,
-  "category": "Lab & reagen",
-  "image": ""
- },
- {
-  "id": "48",
-  "name": "tensi omron / omron tensimeter digital 7140T bluetooth original",
-  "price": 485000,
-  "category": "Alat ukur",
-  "image": ""
- },
- {
-  "id": "49",
-  "name": "paket stetoskop motif kartun bayi dan anak + case",
-  "price": 310000,
-  "category": "Stetoskop",
-  "image": ""
- },
- {
-  "id": "50",
-  "name": "paket stetoskop littmann classic III full black edition dan case",
-  "price": 1650000,
-  "category": "Stetoskop",
-  "image": ""
- },
- {
-  "id": "51",
-  "name": "Paket stetoskop littmann classic III black dan case",
-  "price": 1500000,
-  "category": "Stetoskop",
-  "image": ""
- },
- {
-  "id": "52",
-  "name": "Sarung bantal duduk memory gel / foam",
-  "price": 50000,
-  "category": "Alat bantu",
-  "image": ""
- },
- {
-  "id": "53",
-  "name": "kompresor kasur decubitus QDC pump tanpa kasur",
-  "price": 300000,
-  "category": "Alat bantu",
-  "image": ""
- },
- {
-  "id": "54",
-  "name": "kasur decubitus M6 300B satuan buat ganti bocor",
-  "price": 100000,
-  "category": "Alat bantu",
-  "image": ""
- },
- {
-  "id": "55",
-  "name": "tongkat duduk kursi lipat sholat lansia traveling haji",
-  "price": 400000,
-  "category": "Alat bantu",
-  "image": ""
- },
- {
-  "id": "56",
-  "name": "case stethoscope littmann / tempat penyimpanan stetoskop",
-  "price": 119500,
-  "category": "Stetoskop",
-  "image": ""
- },
- {
-  "id": "57",
-  "name": "single head stetoskop children cartoon stetoskop kartun anak",
-  "price": 250000,
-  "category": "Stetoskop",
-  "image": ""
- },
- {
-  "id": "58",
-  "name": "kasur anti decubitus 300B alternating pressure mattres",
-  "price": 1150000,
-  "category": "Alat bantu",
-  "image": ""
- },
- {
-  "id": "59",
-  "name": "kasur anti decubitus QDC original",
-  "price": 450000,
-  "category": "Alat bantu",
-  "image": ""
- },
- {
-  "id": "60",
-  "name": "tambalan kasur decubitus",
-  "price": 28000,
-  "category": "Alat bantu",
-  "image": ""
- },
- {
-  "id": "61",
-  "name": "tumbler omron botol minum omron edition",
-  "price": 50000,
-  "category": "Lainnya",
-  "image": ""
- },
- {
-  "id": "62",
-  "name": "tds hanna dist 3 HI-98303 POCKET CONDUCTIVITY TESTER (0 TO 2000MS/CM)",
-  "price": 2000000,
-  "category": "Lab & reagen",
-  "image": ""
- },
- {
-  "id": "63",
-  "name": "Tongkat duduk kursi lipat modern new design traveling,sholat",
-  "price": 1000000,
-  "category": "Alat bantu",
-  "image": ""
- },
- {
-  "id": "64",
-  "name": "wing ring bantal duduk donut with pump",
-  "price": 50000,
-  "category": "Alat bantu",
-  "image": ""
- },
- {
-  "id": "65",
-  "name": "bantal duduk tulang ekor memory foam/gel empuk nyaman untuk duduk lama",
-  "price": 255000,
-  "category": "Alat bantu",
-  "image": ""
- },
- {
-  "id": "66",
-  "name": "HI-733 Ammonia High Range Handheld Colorimeter (0.0-99.9ppm) Checker",
-  "price": 2000000,
-  "category": "Lab & reagen",
-  "image": ""
- },
- {
-  "id": "67",
-  "name": "Pantyhose Stocking CCL Il Soft Beige Relaxan medicale- Oppo 2180 italy",
-  "price": 440000,
-  "category": "Alat bantu",
-  "image": ""
- },
- {
-  "id": "68",
-  "name": "Dermafix T 10x12 cm Isi 10 OneMed",
-  "price": 60000,
-  "category": "Alat bantu",
-  "image": ""
- },
- {
-  "id": "69",
-  "name": "electrode storage solution hanna 70300l 500ml",
-  "price": 650000,
-  "category": "Lab & reagen",
-  "image": ""
- },
- {
-  "id": "70",
-  "name": "cleaning solution hanna HI7061L general purpose",
-  "price": 650000,
-  "category": "Lab & reagen",
-  "image": ""
- },
- {
-  "id": "71",
-  "name": "extra packing tambahan dus/buble warp",
-  "price": 2000,
-  "category": "Lainnya",
-  "image": ""
- },
- {
-  "id": "72",
-  "name": "ph hanna buffer solution ph4/ph7/ph10 100 ml",
-  "price": 115000,
-  "category": "Lab & reagen",
-  "image": ""
- },
- {
-  "id": "73",
-  "name": "buffer solution ph hanna ph4/ph7/ph10 500ml",
-  "price": 220000,
-  "category": "Lab & reagen",
-  "image": ""
- },
- {
-  "id": "74",
-  "name": "multi 6 parameter orient gene alat tes harga 1 box",
-  "price": 1210000,
-  "category": "Lainnya",
-  "image": ""
- },
- {
-  "id": "75",
-  "name": "Rapid Test Orient Gene HbsAb Device",
-  "price": 240000,
-  "category": "Lab & reagen",
-  "image": ""
- },
- {
-  "id": "76",
-  "name": "hiv device orient gene",
-  "price": 365000,
-  "category": "Lab & reagen",
-  "image": ""
- },
- {
-  "id": "77",
-  "name": "oppo 1084 wrist thumb support",
-  "price": 300000,
-  "category": "Alat bantu",
-  "image": ""
- },
- {
-  "id": "78",
-  "name": "OMRON Manset Dewasa ukuran (L)jumbo soft cuff 22-42 cm",
-  "price": 220000,
-  "category": "Alat bantu",
-  "image": ""
- },
- {
-  "id": "79",
-  "name": "TEST DENGUE NS1 MONOTES. 1 Kit isi 25 Test.",
-  "price": 920000,
-  "category": "Lab & reagen",
-  "image": ""
- },
- {
-  "id": "80",
-  "name": "Masker Oksigen O2 Resources anak/Oxygen Mask Original",
-  "price": 5000,
-  "category": "Alat bantu",
-  "image": ""
- },
- {
-  "id": "81",
-  "name": "Baterai Panasonic Kancing bulat 2032",
-  "price": 4000,
-  "category": "Lainnya",
-  "image": ""
- },
- {
-  "id": "82",
-  "name": "pulse oxymeter lk87 oximeter murah",
-  "price": 60000,
-  "category": "Alat ukur",
-  "image": ""
- }
-];
+/* Daftar barang dibaca dari /produk.csv (kolom: no, nama, harga, kategori, foto, ig, tampil). */
+let products = [];
+function parseCsv(teks) {
+  const baris = []; let sel = "", row = [], q = false;
+  for (let i = 0; i < teks.length; i++) {
+    const c = teks[i];
+    if (q) { if (c === '"') { if (teks[i + 1] === '"') { sel += '"'; i++; } else q = false; } else sel += c; }
+    else if (c === '"') q = true;
+    else if (c === ",") { row.push(sel); sel = ""; }
+    else if (c === "\n" || c === "\r") { if (c === "\r" && teks[i + 1] === "\n") i++; row.push(sel); sel = ""; baris.push(row); row = []; }
+    else sel += c;
+  }
+  if (sel !== "" || row.length) { row.push(sel); baris.push(row); }
+  return baris.filter((r) => r.some((x) => x.trim() !== ""));
+}
+function bacaProduk(teks) {
+  const [kepala, ...isi] = parseCsv(teks.replace(/^\uFEFF/, ""));
+  const k = (n) => kepala.map((x) => x.trim().toLowerCase()).indexOf(n);
+  const ix = { no: k("no"), nama: k("nama"), harga: k("harga"), kategori: k("kategori"), foto: k("foto"), ig: k("ig"), tampil: k("tampil") };
+  const hasil = [], lewat = [];
+  isi.forEach((r, n) => {
+    const nomor = parseInt(r[ix.no], 10), harga = Number(String(r[ix.harga] || "").replace(/[^\d]/g, ""));
+    const nama = (r[ix.nama] || "").trim(), kat = (r[ix.kategori] || "").trim();
+    if (!(nomor > 0) || !nama || !(harga > 0) || !KATEGORI.includes(kat) || kat === "Semua") { lewat.push(n + 2); return; }
+    if (ix.tampil >= 0 && (r[ix.tampil] || "ya").trim().toLowerCase() === "tidak") return;
+    const foto = (r[ix.foto] || "").trim();
+    hasil.push({ id: String(nomor).padStart(2, "0"), no: nomor, name: nama, price: harga, category: kat,
+      image: foto ? "/catalog/" + foto : "", ig: ix.ig >= 0 ? (r[ix.ig] || "").trim() : "" });
+  });
+  if (lewat.length) console.warn("produk.csv: baris dilewati (data tidak lengkap atau salah):", lewat.join(", "));
+  return hasil;
+}
+async function muatProduk() {
+  const r = await fetch("/produk.csv", { cache: "no-cache" });
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  products = bacaProduk(await r.text());
+  unggulan = products.filter((p) => p.image).slice(0, 5);
+}
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -1020,7 +480,7 @@ function renderToko() {
 }
 
 /* ---------- banner: hanya bagian ini yang digambar ulang oleh timer ---------- */
-const unggulan = products.filter((p) => p.image).slice(0, 5);
+let unggulan = [];
 
 function renderBanner() {
   const p = unggulan[slide];
@@ -1032,7 +492,7 @@ function renderBanner() {
       <p class="kecil">Harga sudah tertera. Masukkan ke pesanan, isi alamat, lalu kirim lewat WhatsApp.</p>
       <p class="harga">${rupiah(p.price)}</p>
       <button class="merah" type="button" data-tambah="${p.id}">Masukkan pesanan</button>
-      ${linkIg(p.id) ? `<a class="tombol-ghost" style="margin-left:8px" href="${esc(linkIg(p.id))}" target="_blank" rel="noopener">Lihat video</a>` : ""}
+      ${linkIg(p) ? `<a class="tombol-ghost" style="margin-left:8px" href="${esc(linkIg(p))}" target="_blank" rel="noopener">Lihat video</a>` : ""}
     </div>
     <img class="foto-banner" src="${p.image}" alt="${esc(p.name)}" width="320" height="320">`;
   document.querySelectorAll("#titik button").forEach((b, i) => b.classList.toggle("nyala", i === slide));
@@ -1095,8 +555,9 @@ function kartu(p) {
       <div class="label">${esc(p.category)}</div>
       <div class="isi">
         <h3>${esc(p.name)}</h3>
+        <p class="kode">Kode ${p.no}</p>
         <p class="harga">${rupiah(p.price)}</p>
-        ${linkIg(p.id) ? `<a class="tombol-ghost" style="margin-top:8px" href="${esc(linkIg(p.id))}" target="_blank" rel="noopener">Lihat video</a>` : ""}
+        ${linkIg(p) ? `<a class="tombol-ghost" style="margin-top:8px" href="${esc(linkIg(p))}" target="_blank" rel="noopener">Lihat video</a>` : ""}
         <button class="tambah" type="button" data-tambah="${p.id}">Tambah</button>
       </div>
     </article>`;
@@ -1132,7 +593,7 @@ function baris(p) {
   return `
     <div class="baris-barang">
       <div class="ik">${IKON_KAT[p.category] || ""}</div>
-      <div class="nm">${esc(p.name)}${minta}</div>
+      <div class="nm">${esc(p.name)}<br><span class="kode">Kode ${p.no}</span>${minta}</div>
       <div class="hg">${rupiah(p.price)}</div>
       <button type="button" data-tambah="${p.id}" aria-label="Tambah ${esc(p.name)}">Tambah</button>
     </div>`;
@@ -1140,8 +601,11 @@ function baris(p) {
 
 function renderEtalase() {
   const kata = query.trim().toLowerCase();
+  /* angka 1-3 digit yang cocok dengan kode barang = cari berdasarkan kode */
+  const kodeCocok = /^\d{1,3}$/.test(kata) && products.some((p) => String(p.no) === String(Number(kata)));
   const tampil = products.filter((p) =>
-    (category === "Semua" || p.category === category) && (!kata || p.name.toLowerCase().includes(kata)));
+    (category === "Semua" || p.category === category) &&
+    (!kata || (kodeCocok ? String(p.no) === String(Number(kata)) : p.name.toLowerCase().includes(kata))));
   $("sorotan").hidden = category !== "Semua" || !!kata;
   $("hitungan").textContent = tampil.length + " dari " + products.length + " barang.";
   const grup = KATEGORI.filter((n) => n !== "Semua")
@@ -1295,7 +759,7 @@ function kirimWhatsApp() {
     "Halo " + TOKO.nama + ", saya mau pesan.",
     "Kode pesanan: " + kode,
     "",
-    ...rinci.map((i, n) => (n + 1) + ". " + i.barang.name + " x" + i.qty + " — " + rupiah(i.barang.price * i.qty)),
+    ...rinci.map((i, n) => (n + 1) + ". [" + i.barang.no + "] " + i.barang.name + " x" + i.qty + " — " + rupiah(i.barang.price * i.qty)),
     "",
     "Subtotal barang: " + rupiah(subtotal),
     "Ekspedisi: " + draft.courier,
@@ -1359,12 +823,18 @@ $("cari").addEventListener("input", (e) => { query = e.target.value; renderEtala
 window.addEventListener("scroll", () => { $("naik").hidden = window.scrollY < 600; }, { passive: true });
 
 renderToko();
-renderTambahan();
-renderTitik();
-renderBanner();
-renderEtalase();
-renderKeranjang();
-mulaiTimer();
+muatProduk().then(() => {
+  renderTambahan();
+  renderTitik();
+  renderBanner();
+  renderEtalase();
+  renderKeranjang();
+  mulaiTimer();
+}).catch((e) => {
+  console.error("produk.csv gagal dimuat:", e);
+  $("banner").hidden = true;
+  $("daftar").innerHTML = '<p>Daftar barang belum bisa dimuat. Muat ulang halaman, atau hubungi penjual.</p>';
+});
 </script>
 </body>
 </html>
