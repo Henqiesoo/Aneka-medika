@@ -178,6 +178,15 @@
   .berita h3 { margin: 4px 0 8px; font-size: 18px; line-height: 1.25; }
   .berita p { margin: 0 0 8px; color: var(--muted); }
   .berita a { color: var(--primary); font-weight: 700; }
+  .pengisi { grid-column: span var(--s2); display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 8px; padding: 24px; border-radius: 12px; background: #e6ecf5; border: 1px dashed #b9c6da; }
+  .pengisi[data-s2="0"] { display: none; }
+  @media (min-width: 700px) {
+    .pengisi, .pengisi[data-s2="0"] { grid-column: span var(--s4); display: flex; }
+    .pengisi[data-s4="0"] { display: none; }
+  }
+  .pengisi svg { width: 40px; height: 40px; color: var(--brand); }
+  .pengisi h3 { margin: 0; font-size: 18px; color: var(--brand); }
+  .pengisi p { margin: 0; color: var(--muted); font-size: 14px; }
 </style>
 </head>
 <body>
@@ -1059,6 +1068,22 @@ function kartu(p) {
     </article>`;
 }
 
+/* kotak pengisi: menutup sel kosong di baris terakhir tiap kategori */
+function pengisi(nama, n) {
+  const s2 = (2 - (n % 2)) % 2, s4 = (4 - (n % 4)) % 4;
+  if (!s2 && !s4) return "";
+  const tanya = "Halo " + TOKO.nama + ", saya cari barang kategori " + nama + " yang belum ada di etalase.";
+  return `
+    <div class="pengisi" data-s2="${s2}" data-s4="${s4}" style="--s2:${s2 || 1};--s4:${s4 || 1}">
+      ${IKON_KAT[nama] || ""}
+      <h3>Cari ${esc(nama.toLowerCase())} lain?</h3>
+      <p>${WA_OK ? "Barang yang belum tampil di etalase bisa ditanyakan langsung ke penjual." : "Ketik nama atau tipe barang di kotak pencarian."}</p>
+      ${WA_OK
+        ? `<a class="merah" href="${esc(waLink(tanya))}" target="_blank" rel="noopener">Tanya penjual</a>`
+        : `<button class="merah" type="button" data-cari="1">Cari barang</button>`}
+    </div>`;
+}
+
 function renderEtalase() {
   const kata = query.trim().toLowerCase();
   const tampil = products.filter((p) =>
@@ -1073,7 +1098,7 @@ function renderEtalase() {
     }))
     .filter((g) => g.items.length);
   $("daftar").innerHTML = grup.length
-    ? grup.map((g) => `<h3 class="grup">${esc(g.nama)}</h3><div class="grid">${g.items.map(kartu).join("")}</div>`).join("")
+    ? grup.map((g) => `<h3 class="grup">${esc(g.nama)}</h3><div class="grid">${g.items.map(kartu).join("")}${pengisi(g.nama, g.items.length)}</div>`).join("")
     : "<p>Tidak ada barang dengan kata itu.</p>";
   renderMenu();
 }
@@ -1226,6 +1251,7 @@ document.body.addEventListener("click", (e) => {
   const t = e.target.closest("button");
   if (!t) return;
   if (t.dataset.tambah) tambah(t.dataset.tambah);
+  else if (t.dataset.cari) { window.scrollTo({ top: 0, behavior: "auto" }); $("cari").focus(); }
   else if (t.dataset.kategori) {
     category = t.dataset.kategori;
     renderEtalase();
