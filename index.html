@@ -158,6 +158,26 @@
   .wa-pjg { display: none; }
   @media (min-width: 800px) { .wa-pjg { display: inline; } .wa-pdk { display: none; } }
   .naik { position: fixed; right: 16px; bottom: 84px; width: 44px; height: 44px; border-radius: 99px; border: 1px solid var(--line); background: white; color: var(--ink); font-size: 18px; z-index: 4; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
+  .iklan { display: grid; gap: 12px; margin-top: 16px; }
+  @media (min-width: 800px) { .iklan { grid-template-columns: 1fr 1fr; } }
+  .iklan img { width: 100%; display: block; border-radius: 12px; }
+  .sorot { display: grid; gap: 12px; margin-top: 24px; }
+  @media (min-width: 900px) { .sorot { grid-template-columns: 1fr 2.4fr; } }
+  .sorot-panel { border-radius: 12px; padding: 24px; color: white; background: var(--brand); display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 8px; }
+  .sorot-panel.kedua { background: var(--primary); }
+  .sorot-panel svg { width: 56px; height: 56px; }
+  .sorot-panel h2 { margin: 0; font-size: 26px; line-height: 1.15; }
+  .sorot-panel p { margin: 0; }
+  .sorot-panel button { height: 44px; border: 0; border-radius: 999px; padding: 0 18px; font-weight: 700; background: white; color: var(--ink); margin-top: 8px; }
+  .berita h2 { margin: 32px 0 12px; }
+  .berita-grid { display: grid; gap: 12px; }
+  @media (min-width: 800px) { .berita-grid { grid-template-columns: repeat(3, 1fr); } }
+  .berita article { background: white; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .berita img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; }
+  .berita .isi-berita { padding: 16px; }
+  .berita h3 { margin: 4px 0 8px; font-size: 18px; line-height: 1.25; }
+  .berita p { margin: 0 0 8px; color: var(--muted); }
+  .berita a { color: var(--primary); font-weight: 700; }
 </style>
 </head>
 <body>
@@ -182,12 +202,15 @@
     <section class="banner" id="banner" aria-label="Pilihan etalase"></section>
     <div class="titik" id="titik"></div>
     <section class="dua" id="info"></section>
+    <section class="iklan" id="iklan" aria-label="Promo" hidden></section>
     <section class="kategori" id="kategori" aria-label="Kategori barang"></section>
+    <div id="sorotan"></div>
     <section class="etalase" id="etalase">
       <h2>Etalase alat kesehatan</h2>
       <p class="kecil" id="hitungan" aria-live="polite"></p>
       <div id="daftar"></div>
     </section>
+    <section class="berita" id="berita" hidden></section>
     <section class="langkah" id="langkah"></section>
   </main>
 
@@ -259,6 +282,16 @@ const LINK_IG = {
 };
 const linkIg = (id) => (/^https:\/\/(www\.)?instagram\.com\//.test(LINK_IG[id] || "") ? LINK_IG[id] : "");
 const igProfil = /^https:\/\/(www\.)?instagram\.com\//.test(TOKO.instagram) ? TOKO.instagram : "";
+
+/* Banner promo (iklan). Kosong = bagian ini tidak tampil. Simpan gambar di folder /iklan (saran 1200x500).
+   Contoh: { gambar: "/iklan/promo-1.jpg", alt: "Promo stetoskop", link: "https://www.instagram.com/..." } */
+const IKLAN = [
+];
+/* Kabar toko / artikel. Kosong = bagian ini tidak tampil.
+   Contoh: { tanggal: "10 Nov 2026", judul: "...", ringkas: "...", gambar: "/berita/a.jpg", link: "https://..." } */
+const BERITA = [
+];
+const linkAman = (u) => (/^(https:\/\/|\/)/.test(u || "") ? u : "");
 
 /* Satu objek = satu barang. image "" = belum ada foto. */
 const products = [
@@ -1030,6 +1063,7 @@ function renderEtalase() {
   const kata = query.trim().toLowerCase();
   const tampil = products.filter((p) =>
     (category === "Semua" || p.category === category) && (!kata || p.name.toLowerCase().includes(kata)));
+  $("sorotan").hidden = category !== "Semua" || !!kata;
   $("hitungan").textContent = tampil.length + " dari " + products.length + " barang.";
   const grup = KATEGORI.filter((n) => n !== "Semua")
     .map((n) => ({
@@ -1042,6 +1076,42 @@ function renderEtalase() {
     ? grup.map((g) => `<h3 class="grup">${esc(g.nama)}</h3><div class="grid">${g.items.map(kartu).join("")}</div>`).join("")
     : "<p>Tidak ada barang dengan kata itu.</p>";
   renderMenu();
+}
+
+/* ---------- iklan, sorotan kategori, kabar toko ---------- */
+function renderTambahan() {
+  $("iklan").hidden = !IKLAN.length;
+  $("iklan").innerHTML = IKLAN.map((i) => {
+    const img = `<img src="${esc(i.gambar)}" alt="${esc(i.alt || "")}" loading="lazy">`;
+    return linkAman(i.link) ? `<a href="${esc(i.link)}" target="_blank" rel="noopener">${img}</a>` : `<div>${img}</div>`;
+  }).join("");
+
+  /* kategori yang punya minimal 4 barang berfoto mendapat panel besar + 4 barang */
+  $("sorotan").innerHTML = KATEGORI.filter((n) => n !== "Semua")
+    .map((n) => ({ n, items: products.filter((p) => p.category === n && p.image).slice(0, 4) }))
+    .filter((g) => g.items.length === 4)
+    .map((g, i) => `
+      <section class="sorot" aria-label="${esc(g.n)}">
+        <div class="sorot-panel ${i % 2 ? "kedua" : ""}">
+          ${IKON_KAT[g.n] || ""}
+          <h2>${esc(g.n)}</h2>
+          <p>${jumlahKat(g.n)} barang di etalase</p>
+          <button type="button" data-kategori="${esc(g.n)}">Lihat semua</button>
+        </div>
+        <div class="grid">${g.items.map(kartu).join("")}</div>
+      </section>`).join("");
+
+  $("berita").hidden = !BERITA.length;
+  $("berita").innerHTML = !BERITA.length ? "" : `<h2>Kabar ${esc(TOKO.nama)}</h2><div class="berita-grid">${BERITA.map((b) => `
+    <article>
+      ${b.gambar ? `<img src="${esc(b.gambar)}" alt="" loading="lazy">` : ""}
+      <div class="isi-berita">
+        ${b.tanggal ? `<div class="kecil">${esc(b.tanggal)}</div>` : ""}
+        <h3>${esc(b.judul)}</h3>
+        ${b.ringkas ? `<p>${esc(b.ringkas)}</p>` : ""}
+        ${linkAman(b.link) ? `<a href="${esc(b.link)}" target="_blank" rel="noopener">Baca selengkapnya</a>` : ""}
+      </div>
+    </article>`).join("")}</div>`;
 }
 
 /* ---------- keranjang ---------- */
@@ -1197,6 +1267,7 @@ $("cari").addEventListener("input", (e) => { query = e.target.value; renderEtala
 window.addEventListener("scroll", () => { $("naik").hidden = window.scrollY < 600; }, { passive: true });
 
 renderToko();
+renderTambahan();
 renderTitik();
 renderBanner();
 renderEtalase();
