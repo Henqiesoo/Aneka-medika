@@ -90,6 +90,7 @@
   .kategori .aktif { border: 2px solid var(--primary); color: var(--primary); }
 
   .etalase { padding: 32px 0 16px; scroll-margin-top: 112px; }
+  .daftar-ringkas { scroll-margin-top: 140px; }
   .etalase h2 { margin: 0 0 4px; }
   .etalase h3.grup { margin: 24px 0 8px; }
   .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
@@ -187,6 +188,19 @@
   .pengisi svg { width: 40px; height: 40px; color: var(--brand); }
   .pengisi h3 { margin: 0; font-size: 18px; color: var(--brand); }
   .pengisi p { margin: 0; color: var(--muted); font-size: 14px; }
+  .daftar-ringkas { background: white; border: 1px solid var(--line); border-radius: 12px; margin-top: 12px; }
+  .daftar-ringkas .ket { margin: 0; padding: 12px 16px; font-size: 13px; color: var(--muted); border-bottom: 1px solid var(--line); }
+  .baris-barang { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 12px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--line); }
+  .baris-barang:last-child { border-bottom: 0; }
+  .baris-barang .nm { font-size: 14px; font-weight: 600; text-transform: capitalize; overflow-wrap: anywhere; }
+  .baris-barang .nm a { display: inline-block; margin-top: 2px; font-size: 12px; font-weight: 700; color: var(--brand); text-transform: none; }
+  .baris-barang .hg { color: var(--primary); font-weight: 800; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .baris-barang button { height: 40px; min-width: 44px; padding: 0 16px; border: 0; border-radius: 8px; background: var(--primary); color: white; font-weight: 700; }
+  @media (max-width: 599px) {
+    .baris-barang { grid-template-columns: minmax(0, 1fr) auto; row-gap: 4px; }
+    .baris-barang .nm { grid-column: 1 / -1; }
+  }
+  @media (max-width: 599px) { .naik { right: auto; left: 16px; bottom: 16px; } }
 </style>
 </head>
 <body>
@@ -1069,18 +1083,37 @@ function kartu(p) {
 }
 
 /* kotak pengisi: menutup sel kosong di baris terakhir tiap kategori */
-function pengisi(nama, n) {
+function pengisi(nama, n, sisa, idDaftar) {
   const s2 = (2 - (n % 2)) % 2, s4 = (4 - (n % 4)) % 4;
   if (!s2 && !s4) return "";
+  const gaya = `class="pengisi" data-s2="${s2}" data-s4="${s4}" style="--s2:${s2 || 1};--s4:${s4 || 1}"`;
+  if (sisa) return `
+    <div ${gaya}>
+      ${IKON_KAT[nama] || ""}
+      <h3>${sisa} ${esc(nama.toLowerCase())} lainnya</h3>
+      <p>Barang yang fotonya belum ada tampil sebagai daftar di bawah.</p>
+      <button class="merah" type="button" data-ke="${idDaftar}">Lihat daftar</button>
+    </div>`;
   const tanya = "Halo " + TOKO.nama + ", saya cari barang kategori " + nama + " yang belum ada di etalase.";
   return `
-    <div class="pengisi" data-s2="${s2}" data-s4="${s4}" style="--s2:${s2 || 1};--s4:${s4 || 1}">
+    <div ${gaya}>
       ${IKON_KAT[nama] || ""}
       <h3>Cari ${esc(nama.toLowerCase())} lain?</h3>
       <p>${WA_OK ? "Barang yang belum tampil di etalase bisa ditanyakan langsung ke penjual." : "Ketik nama atau tipe barang di kotak pencarian."}</p>
       ${WA_OK
         ? `<a class="merah" href="${esc(waLink(tanya))}" target="_blank" rel="noopener">Tanya penjual</a>`
         : `<button class="merah" type="button" data-cari="1">Cari barang</button>`}
+    </div>`;
+}
+
+function baris(p) {
+  const minta = WA_OK
+    ? `<br><a href="${esc(waLink("Halo " + TOKO.nama + ", boleh minta foto " + p.name + "?"))}" target="_blank" rel="noopener">Minta foto</a>` : "";
+  return `
+    <div class="baris-barang">
+      <div class="nm">${esc(p.name)}${minta}</div>
+      <div class="hg">${rupiah(p.price)}</div>
+      <button type="button" data-tambah="${p.id}" aria-label="Tambah ${esc(p.name)}">Tambah</button>
     </div>`;
 }
 
@@ -1093,12 +1126,23 @@ function renderEtalase() {
   const grup = KATEGORI.filter((n) => n !== "Semua")
     .map((n) => ({
       nama: n,
-      /* barang berfoto di depan; urutan asal dijaga dalam tiap kelompok */
-      items: [...tampil.filter((p) => p.category === n && p.image), ...tampil.filter((p) => p.category === n && !p.image)]
+      /* berfoto tampil sebagai kartu, belum berfoto sebagai daftar ringkas; urutan asal dijaga */
+      foto: tampil.filter((p) => p.category === n && p.image),
+      polos: tampil.filter((p) => p.category === n && !p.image)
     }))
-    .filter((g) => g.items.length);
+    .filter((g) => g.foto.length || g.polos.length);
   $("daftar").innerHTML = grup.length
-    ? grup.map((g) => `<h3 class="grup">${esc(g.nama)}</h3><div class="grid">${g.items.map(kartu).join("")}${pengisi(g.nama, g.items.length)}</div>`).join("")
+    ? grup.map((g, i) => {
+        const idDaftar = "daftar-" + i;
+        const kartuHtml = g.foto.length
+          ? `<div class="grid">${g.foto.map(kartu).join("")}${pengisi(g.nama, g.foto.length, g.polos.length, idDaftar)}</div>` : "";
+        const daftarHtml = g.polos.length ? `
+          <div class="daftar-ringkas" id="${idDaftar}">
+            <p class="ket">${g.polos.length} barang, foto menyusul</p>
+            ${g.polos.map(baris).join("")}
+          </div>` : "";
+        return `<h3 class="grup">${esc(g.nama)}</h3>${kartuHtml}${daftarHtml}`;
+      }).join("")
     : "<p>Tidak ada barang dengan kata itu.</p>";
   renderMenu();
 }
@@ -1251,6 +1295,7 @@ document.body.addEventListener("click", (e) => {
   const t = e.target.closest("button");
   if (!t) return;
   if (t.dataset.tambah) tambah(t.dataset.tambah);
+  else if (t.dataset.ke) $(t.dataset.ke).scrollIntoView({ behavior: kurangGerak.matches ? "auto" : "smooth", block: "start" });
   else if (t.dataset.cari) { window.scrollTo({ top: 0, behavior: "auto" }); $("cari").focus(); }
   else if (t.dataset.kategori) {
     category = t.dataset.kategori;
