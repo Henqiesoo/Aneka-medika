@@ -66,6 +66,7 @@
   .harga { color: var(--primary); font-weight: 800; font-size: 24px; margin: 8px 0; }
   .merah, .tambah, .tombol-ghost { border: 0; background: var(--primary); color: white; height: 44px; border-radius: 999px; padding: 0 18px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
   .tambah { width: 100%; border-radius: 8px; margin-top: auto; }
+  .isi .tombol-ghost { width: 100%; border-radius: 8px; margin-bottom: 8px; }
   .tombol-ghost { background: white; color: var(--primary); border: 2px solid var(--primary); }
   .foto-banner { width: 100%; max-height: 320px; object-fit: contain; }
   .titik { display: flex; justify-content: center; gap: 0; padding: 4px 0 8px; }
@@ -225,17 +226,24 @@
 const TOKO = {
   nama: "Aneka Medica",
   wa: "",                 // format 62xxxxxxxxxx, tanpa +, spasi, atau 0 di depan
-  rating: "",             // angka persis dari Shopee
+  rating: "",             // angka rating toko, isi hanya kalau sudah pasti
   kota: "Jakarta Utara",
   alamat: "",
   jamBalas: "",           // contoh: "Senin-Sabtu 08.00-17.00"
   izinToko: "",           // nomor izin toko alat kesehatan
   layaniInvoice: false,   // true = tampilkan opsi "Perlu invoice"
-  shopee: "https://id.shp.ee/SqLfvqLV",
+  instagram: "",          // link profil Instagram toko (opsional)
   kurir: ["J&T Express", "JNE", "SiCepat", "TIKI", "POS Indonesia"]
 };
 const WA_OK = /^62[1-9]\d{7,12}$/.test(TOKO.wa);
 const KATEGORI = ["Semua", "Stetoskop", "Alat ukur", "Lab & reagen", "Alat bantu", "Lainnya"];
+
+/* Link video Instagram per barang. Isi id barang dan link videonya; barang tanpa link tidak menampilkan tombol video.
+   Contoh: "01": "https://www.instagram.com/reel/XXXXXXXXXXX/" */
+const LINK_IG = {
+};
+const linkIg = (id) => (/^https:\/\/(www\.)?instagram\.com\//.test(LINK_IG[id] || "") ? LINK_IG[id] : "");
+const igProfil = /^https:\/\/(www\.)?instagram\.com\//.test(TOKO.instagram) ? TOKO.instagram : "";
 
 /* Satu objek = satu barang. image "" = belum ada foto. */
 const products = [
@@ -853,7 +861,7 @@ function renderToko() {
     [TOKO.nama, TOKO.kota].filter(Boolean).join(" · "),
     "Ongkir dihitung setelah alamat lengkap masuk",
     "Kurir: " + kurirDipakai,
-    WA_OK ? "Pembayaran dikonfirmasi penjual di WhatsApp" : "Belanja lewat etalase Shopee kami"
+    WA_OK ? "Pembayaran dikonfirmasi penjual di WhatsApp" : "Pemesanan online segera dibuka"
   ].map((t) => "<span>" + esc(t) + "</span>");
   $("pita").innerHTML = pita.join("") + pita.map((s) => s.replace("<span>", '<span aria-hidden="true">')).join("");
 
@@ -868,15 +876,15 @@ function renderToko() {
       <div class="kecil">Pesan lewat WhatsApp</div>
       <h2>Kirim pesanan, bayar setelah ongkir jelas.</h2>
       <p>Barang dikirim setelah dana tercatat masuk di rekening penjual.</p>` : `
-      <div class="kecil">Pesan lewat Shopee</div>
-      <h2>Chat WhatsApp toko belum dibuka.</h2>
-      <p>Checkout dan pembayaran lewat <a href="${esc(TOKO.shopee)}" target="_blank" rel="noopener">etalase Shopee kami</a>.</p>`}
+      <div class="kecil">Pemesanan</div>
+      <h2>Chat WhatsApp toko segera dibuka.</h2>
+      <p>Lihat dulu barang dan harganya di etalase ini.${igProfil ? ` Video barang ada di <a href="${esc(igProfil)}" target="_blank" rel="noopener">Instagram kami</a>.` : ""}</p>`}
     </div>`;
 
   $("langkah").innerHTML = `
     <article><div class="nomor">1</div><h2>Pilih barang</h2><p>Dari banner, kotak pencarian, atau kategori.</p></article>
     <article><div class="nomor">2</div><h2>Isi alamat</h2><p>Nama penerima, alamat, kecamatan, kota, kode pos, dan kurir.</p></article>
-    <article><div class="nomor">3</div><h2>${WA_OK ? "Kirim ke WhatsApp" : "Lanjut di Shopee"}</h2><p>${WA_OK ? "Penjual membalas dengan ongkir dan nomor rekening." : "Pesanan diselesaikan lewat etalase Shopee."}</p></article>`;
+    <article><div class="nomor">3</div><h2>Kirim ke WhatsApp</h2><p>Penjual membalas dengan ongkir dan nomor rekening.</p></article>`;
 
   $("jaminan").innerHTML = [
     WA_OK ? "Chat lewat WhatsApp" + (TOKO.jamBalas ? ", balasan " + TOKO.jamBalas : "") : (TOKO.jamBalas ? "Balasan " + TOKO.jamBalas : ""),
@@ -892,7 +900,7 @@ function renderToko() {
       ${TOKO.alamat ? `<p class="kecil">${esc(TOKO.alamat)}</p>` : ""}
       ${TOKO.jamBalas ? `<p class="kecil">Jam balas: ${esc(TOKO.jamBalas)}</p>` : ""}
       ${TOKO.izinToko ? `<p class="kecil">Izin: ${esc(TOKO.izinToko)}</p>` : ""}
-      <p><a href="${esc(TOKO.shopee)}" target="_blank" rel="noopener">Etalase Shopee ${esc(TOKO.nama)}</a></p>
+      ${igProfil ? `<p><a href="${esc(igProfil)}" target="_blank" rel="noopener">Instagram ${esc(TOKO.nama)}</a></p>` : ""}
     </div>
     <div>
       <strong>Kurir</strong>
@@ -900,7 +908,7 @@ function renderToko() {
     </div>
     <div>
       <strong>Pesanan</strong>
-      <p class="kecil">${WA_OK ? "Pilih barang di sini, ongkir dan pembayaran dibahas di WhatsApp." : "Pilih barang di sini, pembelian diselesaikan di Shopee."}</p>
+      <p class="kecil">Pilih barang di sini, ongkir dan pembayaran dibahas di WhatsApp.</p>
       <img class="wm" src="/henqiesoo.png" alt="Henqiesoo" loading="lazy" onerror="this.remove()">
     </div>`;
 
@@ -911,8 +919,8 @@ function renderToko() {
   if (WA_OK) wa.href = waLink("Halo " + TOKO.nama + ", saya mau tanya barang.");
 
   $("catatan-laci").innerHTML = WA_OK ? "" : `
-    <p class="catatan-laci">Pemesanan lewat WhatsApp belum dibuka. Silakan beli di Shopee.<br>
-    <a class="tombol-ghost" style="margin-top:8px" href="${esc(TOKO.shopee)}" target="_blank" rel="noopener">Buka Shopee</a></p>`;
+    <p class="catatan-laci">Pemesanan lewat WhatsApp belum dibuka. Pesanan Anda tetap tersimpan di perangkat ini.${igProfil ? `<br>
+    <a class="tombol-ghost" style="margin-top:8px" href="${esc(igProfil)}" target="_blank" rel="noopener">Buka Instagram</a>` : ""}</p>`;
 }
 
 /* ---------- banner: hanya bagian ini yang digambar ulang oleh timer ---------- */
@@ -925,9 +933,10 @@ function renderBanner() {
     <div>
       <div class="kecil" style="color:var(--brand);font-weight:700">Pilihan etalase</div>
       <h1>${esc(p.name)}</h1>
-      <p class="kecil">Harga sudah tertera. Masukkan ke pesanan, isi alamat, lalu ${WA_OK ? "kirim lewat WhatsApp" : "lanjut di Shopee"}.</p>
+      <p class="kecil">Harga sudah tertera. Masukkan ke pesanan, isi alamat, lalu kirim lewat WhatsApp.</p>
       <p class="harga">${rupiah(p.price)}</p>
       <button class="merah" type="button" data-tambah="${p.id}">Masukkan pesanan</button>
+      ${linkIg(p.id) ? `<a class="tombol-ghost" style="margin-left:8px" href="${esc(linkIg(p.id))}" target="_blank" rel="noopener">Lihat video</a>` : ""}
     </div>
     <img class="foto-banner" src="${p.image}" alt="${esc(p.name)}" width="320" height="320">`;
   document.querySelectorAll("#titik button").forEach((b, i) => b.classList.toggle("nyala", i === slide));
@@ -961,7 +970,7 @@ kurangGerak.addEventListener("change", mulaiTimer);
 function renderMenu() {
   $("menu").innerHTML = KATEGORI.map((n) =>
     `<button type="button" data-kategori="${esc(n)}" class="${n === category ? "aktif" : ""}">${esc(n)}</button>`).join("") +
-    `<a href="${esc(TOKO.shopee)}" target="_blank" rel="noopener">Shopee</a>`;
+    (igProfil ? `<a href="${esc(igProfil)}" target="_blank" rel="noopener">Instagram</a>` : "");
   $("kategori").innerHTML = KATEGORI.map((n) =>
     `<button type="button" class="${n === category ? "aktif" : ""}" data-kategori="${esc(n)}">${esc(n)}</button>`).join("");
 }
@@ -973,7 +982,7 @@ function kartu(p) {
     ? `<img src="${p.image}" alt="${esc(p.name)}" loading="lazy" decoding="async" width="540" height="540">`
     : `<div class="tanpa-foto">${IKON}${WA_OK
         ? `<a href="${esc(waLink("Halo " + TOKO.nama + ", boleh minta foto " + p.name + "?"))}" target="_blank" rel="noopener">Minta foto</a>`
-        : `<a href="${esc(TOKO.shopee)}" target="_blank" rel="noopener">Lihat di Shopee</a>`}</div>`;
+        : ""}</div>`;
   return `
     <article class="kartu">
       <div class="gambar">${foto}</div>
@@ -981,6 +990,7 @@ function kartu(p) {
       <div class="isi">
         <h3>${esc(p.name)}</h3>
         <p class="harga">${rupiah(p.price)}</p>
+        ${linkIg(p.id) ? `<a class="tombol-ghost" style="margin-top:8px" href="${esc(linkIg(p.id))}" target="_blank" rel="noopener">Lihat video</a>` : ""}
         <button class="tambah" type="button" data-tambah="${p.id}">Tambah</button>
       </div>
     </article>`;
@@ -1013,7 +1023,7 @@ function rinciKeranjang() {
 }
 function kekurangan() {
   const k = [];
-  if (!WA_OK) k.push("Pemesanan lewat WhatsApp belum dibuka. Silakan beli di Shopee");
+  if (!WA_OK) k.push("Pemesanan lewat WhatsApp belum dibuka");
   if (!rinciKeranjang().length) k.push("pilih minimal 1 barang");
   if (!draft.name.trim()) k.push("isi nama penerima");
   if (!draft.address.trim()) k.push("isi alamat lengkap");
