@@ -124,7 +124,13 @@
   .kaki p { margin: 6px 0; }
   .wm { width: 140px; display: block; margin-top: 12px; }
 
-  .wa { position: fixed; right: 16px; bottom: 16px; width: 56px; height: 56px; border-radius: 99px; background: var(--primary); color: white; display: grid; place-items: center; text-decoration: none; font-weight: 800; box-shadow: 0 2px 8px rgba(0,0,0,.25); z-index: 4; }
+  .wa-wrap { position: fixed; right: 16px; bottom: 16px; z-index: 4; display: flex; align-items: center; gap: 10px; }
+  .wa { width: 60px; height: 60px; border-radius: 99px; background: #25d366; color: white; display: grid; place-items: center; text-decoration: none; box-shadow: 0 3px 10px rgba(0,0,0,.25); border: 0; padding: 0; }
+  .wa svg { width: 34px; height: 34px; }
+  .wa-label { background: white; color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; font-size: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.12); display: none; white-space: nowrap; }
+  .wa-label strong { font-weight: 700; }
+  @media (min-width: 800px) { .wa-label { display: block; } }
+  .wa-info { position: absolute; right: 0; bottom: 136px; width: 240px; background: var(--ink); color: white; font-size: 13px; padding: 10px 12px; border-radius: 8px; }
 
   .layar { position: fixed; inset: 0; background: rgba(28,28,28,.45); display: flex; justify-content: flex-end; z-index: 10; }
   .laci { width: min(440px, 100%); height: 100%; background: var(--bg); display: flex; flex-direction: column; }
@@ -155,10 +161,7 @@
   @media (min-width: 800px) { .kaki { grid-template-columns: 1.2fr 1fr 1fr 1fr; } }
   .tautan { display: block; background: none; border: 0; padding: 0; min-height: 36px; color: var(--ink); text-align: left; font-size: 14px; }
   .tautan:hover { color: var(--primary); text-decoration: underline; }
-  .wa { width: auto; min-width: 56px; padding: 0 18px; }
-  .wa-pjg { display: none; }
-  @media (min-width: 800px) { .wa-pjg { display: inline; } .wa-pdk { display: none; } }
-  .naik { position: fixed; right: 16px; bottom: 84px; width: 44px; height: 44px; border-radius: 99px; border: 1px solid var(--line); background: white; color: var(--ink); font-size: 18px; z-index: 4; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
+  .naik { position: fixed; right: 24px; bottom: 92px; width: 44px; height: 44px; border-radius: 99px; border: 1px solid var(--line); background: white; color: var(--ink); font-size: 18px; z-index: 4; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
   .iklan { display: grid; gap: 12px; margin-top: 16px; }
   @media (min-width: 800px) { .iklan { grid-template-columns: 1fr 1fr; } }
   .iklan img { width: 100%; display: block; border-radius: 12px; }
@@ -190,15 +193,18 @@
   .pengisi p { margin: 0; color: var(--muted); font-size: 14px; }
   .daftar-ringkas { background: white; border: 1px solid var(--line); border-radius: 12px; margin-top: 12px; }
   .daftar-ringkas .ket { margin: 0; padding: 12px 16px; font-size: 13px; color: var(--muted); border-bottom: 1px solid var(--line); }
-  .baris-barang { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 12px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--line); }
+  .baris-barang .ik { width: 48px; height: 48px; border-radius: 8px; background: #e6ecf5; color: var(--brand); display: grid; place-items: center; }
+  .baris-barang .ik svg { width: 26px; height: 26px; }
+  .baris-barang { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto auto; gap: 12px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--line); }
   .baris-barang:last-child { border-bottom: 0; }
   .baris-barang .nm { font-size: 14px; font-weight: 600; text-transform: capitalize; overflow-wrap: anywhere; }
   .baris-barang .nm a { display: inline-block; margin-top: 2px; font-size: 12px; font-weight: 700; color: var(--brand); text-transform: none; }
   .baris-barang .hg { color: var(--primary); font-weight: 800; white-space: nowrap; font-variant-numeric: tabular-nums; }
   .baris-barang button { height: 40px; min-width: 44px; padding: 0 16px; border: 0; border-radius: 8px; background: var(--primary); color: white; font-weight: 700; }
   @media (max-width: 599px) {
-    .baris-barang { grid-template-columns: minmax(0, 1fr) auto; row-gap: 4px; }
-    .baris-barang .nm { grid-column: 1 / -1; }
+    .baris-barang { grid-template-columns: 48px minmax(0, 1fr) auto; row-gap: 4px; }
+    .baris-barang .ik { grid-row: span 2; }
+    .baris-barang .nm { grid-column: 2 / -1; }
   }
   @media (max-width: 599px) { .naik { right: auto; left: 16px; bottom: 16px; } }
 </style>
@@ -243,7 +249,13 @@
   <footer class="kaki-luar">
     <div class="wrap kaki" id="kaki"></div>
   </footer>
-  <a class="wa" id="wa" href="#" aria-label="Chat WhatsApp" target="_blank" rel="noopener" hidden><span class="wa-pjg">Butuh bantuan? Chat WhatsApp</span><span class="wa-pdk">WA</span></a>
+  <div class="wa-wrap">
+    <span class="wa-label">Butuh bantuan? <strong>Chat kami</strong></span>
+    <a class="wa" id="wa" href="#" aria-label="Chat WhatsApp" target="_blank" rel="noopener">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" d="M16 3.5A12.5 12.5 0 0 0 5.2 22.3L3.5 28.5l6.4-1.7A12.5 12.5 0 1 0 16 3.5z"/><path fill="currentColor" d="M11.6 9.6c.3-.6.6-.6.9-.6h.7c.2 0 .5 0 .8.6l1.1 2.6c.1.3.1.5-.1.8l-.7.9c-.2.2-.2.5 0 .8.6 1 1.4 1.9 2.4 2.6.6.4 1.1.7 1.6.9.3.1.5.1.7-.1l1-1.2c.2-.3.5-.3.8-.2l2.5 1.2c.3.1.5.3.5.5 0 .9-.3 1.8-1 2.3-.8.6-1.9.9-3 .7-1.7-.4-3.6-1.4-5.2-3-1.5-1.5-2.6-3.2-3-4.7-.4-1.5 0-2.9.9-3.9z"/></svg>
+    </a>
+    <div class="wa-info" id="wa-info" role="status" hidden>Chat WhatsApp toko segera dibuka. Sementara itu, barang bisa dimasukkan ke pesanan.</div>
+  </div>
   <button class="naik" id="naik" type="button" aria-label="Kembali ke atas" hidden>↑</button>
 </div>
 
@@ -991,8 +1003,15 @@ function renderToko() {
   $("kurir").innerHTML = TOKO.kurir.map((k) => `<option>${esc(k)}</option>`).join("");
   $("blok-invoice").hidden = !TOKO.layaniInvoice;
   const wa = $("wa");
-  wa.hidden = !WA_OK;
   if (WA_OK) wa.href = waLink("Halo " + TOKO.nama + ", saya mau tanya barang.");
+  else {
+    wa.removeAttribute("href"); wa.removeAttribute("target");
+    wa.setAttribute("role", "button"); wa.tabIndex = 0;
+    let jeda;
+    const info = () => { $("wa-info").hidden = false; clearTimeout(jeda); jeda = setTimeout(() => { $("wa-info").hidden = true; }, 4000); };
+    wa.addEventListener("click", info);
+    wa.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); info(); } });
+  }
 
   $("catatan-laci").innerHTML = WA_OK ? "" : `
     <p class="catatan-laci">Pemesanan lewat WhatsApp belum dibuka. Pesanan Anda tetap tersimpan di perangkat ini.${igProfil ? `<br>
@@ -1111,6 +1130,7 @@ function baris(p) {
     ? `<br><a href="${esc(waLink("Halo " + TOKO.nama + ", boleh minta foto " + p.name + "?"))}" target="_blank" rel="noopener">Minta foto</a>` : "";
   return `
     <div class="baris-barang">
+      <div class="ik">${IKON_KAT[p.category] || ""}</div>
       <div class="nm">${esc(p.name)}${minta}</div>
       <div class="hg">${rupiah(p.price)}</div>
       <button type="button" data-tambah="${p.id}" aria-label="Tambah ${esc(p.name)}">Tambah</button>
